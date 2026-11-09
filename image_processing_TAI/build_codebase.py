@@ -135,3 +135,190 @@ if __name__ == "__main__":
 
 FILES["utils/__init__.py"] = "from .generate_fixtures import generate_all_fixtures\n"
 
+# =====================================================================
+# TP1 FILES
+# =====================================================================
+FILES["TP1/TP1_Exo2.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+# 1. Reading an image
+img = cv2.imread('Images/BoatsColor.bmp')
+if img is None:
+    raise FileNotFoundError("Could not find Images/BoatsColor.bmp")
+
+# 2. Loading / converting to grayscale
+gray_img = cv2.imread('Images/BoatsColor.bmp', cv2.IMREAD_GRAYSCALE)
+gray_img2 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# 3. Read pixel at (100, 150)
+pixel = img[100, 150]
+print(f"The BGR values of Pixel at (100, 150) are: {pixel}")
+
+# 4. Dimensions
+height, width, channels = img.shape
+print(f"Height: {height} pixels")
+print(f"Width: {width} pixels")
+print(f"Channels: {channels}")
+
+# 5. Modifying center horizontal scanline to pure red [B=0, G=0, R=255]
+annotated = img.copy()
+center_row = height // 2
+annotated[center_row, :] = [0, 0, 255]
+
+cv2.imshow('Input Image', img)
+cv2.imshow('Image loaded in grayscale', gray_img)
+cv2.imshow('Image converted to grayscale', gray_img2)
+cv2.imshow('Centerline Red', annotated)
+
+print("[TP1_Exo2] Displaying. Press any key to continue...")
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+'''
+
+FILES["TP1/TP1_Exo3.py"] = '''import os
+import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+# Read target image
+path = 'Images/counter.jpg' if os.path.exists('Images/counter.jpg') else 'Images/flower.bmp'
+img = cv2.imread(path)
+img_ng = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+height, width = img_ng.shape
+
+# Solution 1: OpenCV primitive
+_, imgb1 = cv2.threshold(img_ng, 80, 255, cv2.THRESH_BINARY)
+
+# Solution 2: Explicit manual nested loops
+imgb2 = np.zeros((height, width), dtype=np.uint8)
+for i in range(height):
+    for j in range(width):
+        if img_ng[i, j] > 80:
+            imgb2[i, j] = 255
+
+# Solution 3: Vectorized NumPy
+imgb3 = np.where(img_ng > 80, np.uint8(255), np.uint8(0))
+
+assert np.array_equal(imgb1, imgb2)
+assert np.array_equal(imgb1, imgb3)
+print("[TP1_Exo3] Verified: All binarization implementations match bit-for-bit.")
+
+cv2.imwrite('Images/imgb1.jpg', imgb1)
+
+cv2.imshow('Original Grayscale', img_ng)
+cv2.imshow('Binary OpenCV (imgb1)', imgb1)
+cv2.imshow('Binary Loop (imgb2)', imgb2)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+'''
+
+FILES["TP1/TP1_Exo4.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+# 1) Read image im1
+im1 = cv2.imread('Images/pepper.bmp')
+# 2) Read size (height, width)
+h, w = im1.shape[:2]
+print(f"Height: {h}, Width: {w}")
+
+# 3) Resize by dividing size by 2 -> im2
+im2 = cv2.resize(im1, (w // 2, h // 2), interpolation=cv2.INTER_LINEAR)
+
+# 4) Crop region [y_start=30:y_end=150, x_start=200:x_end=400] -> im3
+im3 = im1[30:150, 200:400].copy()
+
+# 5) Copy im1 -> im4, draw blue rectangle + text "My rectangle" in green at [x=200, y=20]
+im4 = im1.copy()
+cv2.rectangle(im4, (200, 30), (400, 150), (255, 0, 0), thickness=2)
+cv2.putText(im4, 'My rectangle', (200, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
+# 6) Rotate im1 by 90 degrees -> im5
+center = (w / 2.0, h / 2.0)
+matrix = cv2.getRotationMatrix2D(center, 90.0, 1.0)
+im5 = cv2.warpAffine(im1, matrix, (w, h))
+
+# 7) Apply Gaussian blur -> im6
+im6 = cv2.GaussianBlur(im1, (15, 15), 0)
+
+# 8) Display all images
+cv2.imshow('im1 - Original', im1)
+cv2.imshow('im2 - Half Scaled', im2)
+cv2.imshow('im3 - Cropped ROI', im3)
+cv2.imshow('im4 - Annotated', im4)
+cv2.imshow('im5 - Rotated 90', im5)
+cv2.imshow('im6 - Gaussian Blur', im6)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+'''
+
+FILES["TP1/TP1_Exo5.py"] = '''import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+# 1) Read grayscale (im1) and color (im2)
+im1 = cv2.imread('Images/cameraman.bmp', cv2.IMREAD_GRAYSCALE)
+im2 = cv2.imread('Images/pepper.bmp', cv2.IMREAD_COLOR)
+
+# 2) Calculate histograms via cv2.calcHist()
+hist1 = cv2.calcHist([im1], [0], None, [256], [0, 256])
+hist2_B = cv2.calcHist([im2], [0], None, [256], [0, 256])
+hist2_G = cv2.calcHist([im2], [1], None, [256], [0, 256])
+hist2_R = cv2.calcHist([im2], [2], None, [256], [0, 256])
+
+# 4) Custom histogram algorithm
+def custom_calc_hist(channel_2d):
+    counts = np.bincount(channel_2d.ravel(), minlength=256)
+    return counts.astype(np.float32).reshape(-1, 1)
+
+histp1 = custom_calc_hist(im1)
+b, g, r = cv2.split(im2)
+histp2_B = custom_calc_hist(b)
+histp2_G = custom_calc_hist(g)
+histp2_R = custom_calc_hist(r)
+
+# Verify custom vs OpenCV
+np.testing.assert_array_equal(hist1, histp1)
+np.testing.assert_array_equal(hist2_B, histp2_B)
+np.testing.assert_array_equal(hist2_G, histp2_G)
+np.testing.assert_array_equal(hist2_R, histp2_R)
+print("[TP1_Exo5] Verified: Custom histogram computation matches OpenCV 100%.")
+
+# 3) Display with matplotlib
+fig, axs = plt.subplots(2, 2, figsize=(12, 8))
+axs[0, 0].imshow(im1, cmap='gray')
+axs[0, 0].set_title('im1: Cameraman')
+axs[0, 0].axis('off')
+
+axs[0, 1].plot(hist1, color='black', label='Grayscale')
+axs[0, 1].set_title('Histogram im1')
+axs[0, 1].set_xlim([0, 256])
+axs[0, 1].legend()
+
+im2_rgb = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
+axs[1, 0].imshow(im2_rgb)
+axs[1, 0].set_title('im2: Pepper')
+axs[1, 0].axis('off')
+
+axs[1, 1].plot(hist2_R, color='red', label='Red')
+axs[1, 1].plot(hist2_G, color='green', label='Green')
+axs[1, 1].plot(hist2_B, color='blue', label='Blue')
+axs[1, 1].set_title('Color Histograms im2')
+axs[1, 1].set_xlim([0, 256])
+axs[1, 1].legend()
+
+plt.tight_layout()
+plt.show()
+'''
+
