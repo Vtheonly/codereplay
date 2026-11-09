@@ -95,3 +95,6 @@ def generate_all_fixtures(base_dir="Images"):
             cv2.putText(hr, "will sagen: de", (40, 260), cv2.FONT_HERSHEY_COMPLEX, 1.6, 30, 3)
             cv2.putText(hr, "verstehe auch d", (40, 360), cv2.FONT_HERSHEY_COMPLEX, 1.6, 30, 3)
             cv2.imwrite(hr_path, hr)
+
+            lr256 = cv2.resize(hr, (256, 256), interpolation=cv2.INTER_AREA)
+            lr128 = cv2.resize(hr, (128, 128), interpolation=cv2.INTER_AREA)
