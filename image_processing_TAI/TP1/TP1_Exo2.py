@@ -16,3 +16,9 @@ gray_img2 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # 3. Read pixel at (100, 150)
 pixel = img[100, 150]
 print(f"The BGR values of Pixel at (100, 150) are: {pixel}")
+
+# 4. Dimensions
+height, width, channels = img.shape
+print(f"Height: {height} pixels")
+print(f"Width: {width} pixels")
+print(f"Channels: {channels}")
