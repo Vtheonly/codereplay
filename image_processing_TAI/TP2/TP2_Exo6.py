@@ -25,3 +25,9 @@ for i in range(1, min(6, len(hr_files) + 1)):
     sr_near = cv2.resize(lr256, (512, 512), interpolation=cv2.INTER_NEAREST)
     sr_linear = cv2.resize(lr256, (512, 512), interpolation=cv2.INTER_LINEAR)
     sr_cubic = cv2.resize(lr256, (512, 512), interpolation=cv2.INTER_CUBIC)
+    
+    p_near = calculate_psnr(hr, sr_near)
+    p_lin = calculate_psnr(hr, sr_linear)
+    p_cub = calculate_psnr(hr, sr_cubic)
+    print(f"Image {i:<9} | {p_near:<12.2f} | {p_lin:<12.2f} | {p_cub:<12.2f}")
+print("=" * 60)
