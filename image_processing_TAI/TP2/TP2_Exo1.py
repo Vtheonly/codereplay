@@ -23,3 +23,7 @@ gaussian_noise = np.zeros(im1.shape, np.float32)
 cv2.randn(gaussian_noise, 0.0, 10.0)
 im2 = np.clip(im1.astype(np.float32) + gaussian_noise, 0, 255).astype(np.uint8)
 cv2.imwrite('Images/cameraman_bruit_gauss_sig0_001.bmp', im2)
+
+# 3) Salt & Pepper noise p = 10% -> im3
+im3 = sp_noise(im1, prob=0.10)
+cv2.imwrite('Images/cameraman_bruit_sel_poivre_p_10.bmp', im3)
