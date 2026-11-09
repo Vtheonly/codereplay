@@ -27,3 +27,6 @@ def binSauvola(im, k=0.04, R=128, tailleFen=15):
         for x in range(w):
             s = ii[y + tailleFen, x + tailleFen] + ii[y, x] - ii[y, x + tailleFen] - ii[y + tailleFen, x]
             s2 = ii2[y + tailleFen, x + tailleFen] + ii2[y, x] - ii2[y, x + tailleFen] - ii2[y + tailleFen, x]
+            mean = s / area
+            var = max(0.0, (s2 / area) - (mean ** 2))
+            std = np.sqrt(var)
