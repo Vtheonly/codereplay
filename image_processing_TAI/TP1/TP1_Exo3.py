@@ -20,3 +20,6 @@ for i in range(height):
     for j in range(width):
         if img_ng[i, j] > 80:
             imgb2[i, j] = 255
+
+# Solution 3: Vectorized NumPy
+imgb3 = np.where(img_ng > 80, np.uint8(255), np.uint8(0))
