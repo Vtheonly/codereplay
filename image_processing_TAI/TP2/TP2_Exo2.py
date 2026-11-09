@@ -93,3 +93,8 @@ bench("Fast Integral Mean 7x7", "Gaussian", filtreMoyenne_integral(im2, 7))
 for s in [2.0, 1.5, 1.0, 0.5]:
     bench(f"Gauss 3x3 s={s}", "Gaussian", cv2.GaussianBlur(im2, (3, 3), s))
     bench(f"Gauss 5x5 s={s}", "Gaussian", cv2.GaussianBlur(im2, (5, 5), s))
+
+# Median
+bench("Median 3x3", "S&P", cv2.medianBlur(im3, 3))
+bench("Median 5x5", "S&P", cv2.medianBlur(im3, 5))
+bench("Median 7x7", "S&P", cv2.medianBlur(im3, 7))
