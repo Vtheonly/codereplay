@@ -70,3 +70,4 @@ def filtreMoyenne_adaptative(image, taille_masque=5, noise_var=100.0):
             else:
                 factor = noise_var / l_var
             res[y, x] = l_mean + (1.0 - factor) * (image[y, x] - l_mean)
+    return np.clip(np.round(res), 0, 255).astype(np.uint8)
