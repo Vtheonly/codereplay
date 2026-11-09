@@ -23,3 +23,7 @@ for i in range(height):
 
 # Solution 3: Vectorized NumPy
 imgb3 = np.where(img_ng > 80, np.uint8(255), np.uint8(0))
+
+assert np.array_equal(imgb1, imgb2)
+assert np.array_equal(imgb1, imgb3)
+print("[TP1_Exo3] Verified: All binarization implementations match bit-for-bit.")
