@@ -39,3 +39,10 @@ except AttributeError:
             change = False
             for step in [1, 2]:
                 marked = []
+                for i in range(1, img.shape[0] - 1):
+                    for j in range(1, img.shape[1] - 1):
+                        if img[i, j] == 0:
+                            continue
+                        p2, p3, p4 = img[i-1, j], img[i-1, j+1], img[i, j+1]
+                        p5, p6, p7 = img[i+1, j+1], img[i+1, j], img[i+1, j-1]
+                        p8, p9 = img[i, j-1], img[i-1, j-1]
