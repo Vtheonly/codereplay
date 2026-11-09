@@ -83,3 +83,15 @@ def generate_all_fixtures(base_dir="Images"):
     ]
     for d in dirs:
         os.makedirs(d, exist_ok=True)
+
+    for i in range(1, 24):
+        hr_path = os.path.join(dirs[0], f"HR_GT_{i}.jpg")
+        lr256_path = os.path.join(dirs[1], f"LR_256_{i}.jpg")
+        lr128_path = os.path.join(dirs[2], f"LR_128_{i}.jpg")
+
+        if not os.path.exists(hr_path):
+            hr = np.full((512, 512), 240, dtype=np.uint8)
+            cv2.putText(hr, f"Doc Text {i}", (40, 150), cv2.FONT_HERSHEY_SIMPLEX, 2.0, 20, 4)
+            cv2.putText(hr, "will sagen: de", (40, 260), cv2.FONT_HERSHEY_COMPLEX, 1.6, 30, 3)
+            cv2.putText(hr, "verstehe auch d", (40, 360), cv2.FONT_HERSHEY_COMPLEX, 1.6, 30, 3)
+            cv2.imwrite(hr_path, hr)
