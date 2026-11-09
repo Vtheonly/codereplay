@@ -27,3 +27,9 @@ def expansionHisto(image, seuil=0, y_min=0, y_max=255):
 
 im1_exp = expansionHisto(im1, seuil=5)
 imc1_exp = expansionHisto(imc1, seuil=5)
+
+# Equalization
+im1_eq = cv2.equalizeHist(im1)
+imc1_ycrcb = cv2.cvtColor(imc1, cv2.COLOR_BGR2YCrCb)
+imc1_ycrcb[:, :, 0] = cv2.equalizeHist(imc1_ycrcb[:, :, 0])
+imc1_eq = cv2.cvtColor(imc1_ycrcb, cv2.COLOR_YCrCb2BGR)
