@@ -54,3 +54,9 @@ def filtreMoyenne_integral(image, taille_masque):
             - ii[0:h, taille_masque:w + taille_masque]
             - ii[taille_masque:h + taille_masque, 0:w])
     return np.clip(np.round(sums / area), 0, 255).astype(np.uint8)
+
+# Homework: Adaptive Local Mean Filter
+def filtreMoyenne_adaptative(image, taille_masque=5, noise_var=100.0):
+    rad = taille_masque // 2
+    padded = np.pad(image.astype(np.float64), rad, mode='reflect')
+    res = np.zeros_like(image, dtype=np.float64)
