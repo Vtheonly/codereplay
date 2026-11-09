@@ -23,3 +23,7 @@ def filtreMoyenne(image, taille_masque):
     rad = taille_masque // 2
     padded = np.pad(image.astype(np.float64), rad, mode='reflect')
     res = np.zeros_like(image, dtype=np.uint8)
+    for y in range(image.shape[0]):
+        for x in range(image.shape[1]):
+            res[y, x] = int(round(np.mean(padded[y:y + taille_masque, x:x + taille_masque])))
+    return res
