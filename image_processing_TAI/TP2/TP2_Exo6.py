@@ -17,3 +17,7 @@ hr_files = sorted(glob.glob(os.path.join(base, "HR_GT_512x512", "*.jpg")))
 print("=" * 60)
 print(f"{'IMAGE':<15} | {'NEAREST 2x':<12} | {'BILINEAR 2x':<12} | {'BICUBIC 2x':<12}")
 print("=" * 60)
+
+for i in range(1, min(6, len(hr_files) + 1)):
+    hr = cv2.imread(os.path.join(base, "HR_GT_512x512", f"HR_GT_{i}.jpg"), cv2.IMREAD_GRAYSCALE)
+    lr256 = cv2.imread(os.path.join(base, "LR_256x256", f"LR_256_{i}.jpg"), cv2.IMREAD_GRAYSCALE)
