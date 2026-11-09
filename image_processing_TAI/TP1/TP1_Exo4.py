@@ -28,3 +28,14 @@ im5 = cv2.warpAffine(im1, matrix, (w, h))
 
 # 7) Apply Gaussian blur -> im6
 im6 = cv2.GaussianBlur(im1, (15, 15), 0)
+
+# 8) Display all images
+cv2.imshow('im1 - Original', im1)
+cv2.imshow('im2 - Half Scaled', im2)
+cv2.imshow('im3 - Cropped ROI', im3)
+cv2.imshow('im4 - Annotated', im4)
+cv2.imshow('im5 - Rotated 90', im5)
+cv2.imshow('im6 - Gaussian Blur', im6)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
