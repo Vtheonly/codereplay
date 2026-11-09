@@ -48,3 +48,8 @@ def generic_edge_detection(image, kx, ky, sb=30, sh=70):
     ori = np.arctan2(gy, gx)
     nms = non_maximum_suppression(mag, ori)
     return hysteresis_threshold(nms, sb, sh)
+
+def sobel_edge_detection(im, sb=30, sh=70):
+    kx = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=np.float32)
+    ky = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=np.float32)
+    return generic_edge_detection(im, kx, ky, sb, sh)
