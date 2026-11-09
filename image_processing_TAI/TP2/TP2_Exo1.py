@@ -17,3 +17,9 @@ def sp_noise(image, prob):
 
 # 1) Read grayscale cameraman.bmp into 2D array im1
 im1 = cv2.imread('Images/cameraman.bmp', cv2.IMREAD_GRAYSCALE)
+
+# 2) Additive Gaussian Noise sigma^2 = 100 -> sigma = 10
+gaussian_noise = np.zeros(im1.shape, np.float32)
+cv2.randn(gaussian_noise, 0.0, 10.0)
+im2 = np.clip(im1.astype(np.float32) + gaussian_noise, 0, 255).astype(np.uint8)
+cv2.imwrite('Images/cameraman_bruit_gauss_sig0_001.bmp', im2)
