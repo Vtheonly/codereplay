@@ -12,3 +12,7 @@ if img is None:
 # 2. Loading / converting to grayscale
 gray_img = cv2.imread('Images/BoatsColor.bmp', cv2.IMREAD_GRAYSCALE)
 gray_img2 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# 3. Read pixel at (100, 150)
+pixel = img[100, 150]
+print(f"The BGR values of Pixel at (100, 150) are: {pixel}")
