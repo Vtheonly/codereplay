@@ -616,3 +616,85 @@ except AttributeError:
     print("[TP2_Exo4] Applied custom Zhang-Suen fallback.")
 '''
 
+FILES["TP2/TP2_Exo5.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+im1 = cv2.imread('Images/compteur.jpg', cv2.IMREAD_GRAYSCALE)
+imc1 = cv2.imread('Images/glaucome-haut-gauche.jpg', cv2.IMREAD_COLOR)
+
+# 1.c) Custom expansionHisto
+def expansionHisto(image, seuil=0, y_min=0, y_max=255):
+    if len(image.shape) == 3:
+        channels = cv2.split(image)
+        expanded = [expansionHisto(c, seuil, y_min, y_max) for c in channels]
+        return cv2.merge(expanded)
+    
+    hist = np.bincount(image.ravel(), minlength=256)
+    valid_indices = np.where(hist > seuil)[0]
+    if len(valid_indices) == 0:
+        return image.copy()
+    x_min, x_max = valid_indices[0], valid_indices[-1]
+    if x_max == x_min:
+        return image.copy()
+    
+    res = (image.astype(np.float64) - x_min) / (x_max - x_min) * (y_max - y_min) + y_min
+    return np.clip(np.round(res), y_min, y_max).astype(np.uint8)
+
+im1_exp = expansionHisto(im1, seuil=5)
+imc1_exp = expansionHisto(imc1, seuil=5)
+
+# Equalization
+im1_eq = cv2.equalizeHist(im1)
+imc1_ycrcb = cv2.cvtColor(imc1, cv2.COLOR_BGR2YCrCb)
+imc1_ycrcb[:, :, 0] = cv2.equalizeHist(imc1_ycrcb[:, :, 0])
+imc1_eq = cv2.cvtColor(imc1_ycrcb, cv2.COLOR_YCrCb2BGR)
+
+# CLAHE
+clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+im1_clahe = clahe.apply(im1)
+
+imc1_lab = cv2.cvtColor(imc1, cv2.COLOR_BGR2LAB)
+imc1_lab[:, :, 0] = clahe.apply(imc1_lab[:, :, 0])
+imc1_clahe = cv2.cvtColor(imc1_lab, cv2.COLOR_LAB2BGR)
+
+print("[TP2_Exo5] Dynamic range and CLAHE processed successfully.")
+'''
+
+FILES["TP2/TP2_Exo6.py"] = '''import os
+import glob
+import math
+import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+def calculate_psnr(orig, deg):
+    mse = np.mean((orig.astype(np.float64) - deg.astype(np.float64)) ** 2)
+    return float('inf') if mse == 0 else 10.0 * math.log10((255.0 ** 2) / mse)
+
+base = "Images/Images_TP2_EXO6_SR"
+hr_files = sorted(glob.glob(os.path.join(base, "HR_GT_512x512", "*.jpg")))
+
+print("=" * 60)
+print(f"{'IMAGE':<15} | {'NEAREST 2x':<12} | {'BILINEAR 2x':<12} | {'BICUBIC 2x':<12}")
+print("=" * 60)
+
+for i in range(1, min(6, len(hr_files) + 1)):
+    hr = cv2.imread(os.path.join(base, "HR_GT_512x512", f"HR_GT_{i}.jpg"), cv2.IMREAD_GRAYSCALE)
+    lr256 = cv2.imread(os.path.join(base, "LR_256x256", f"LR_256_{i}.jpg"), cv2.IMREAD_GRAYSCALE)
+    
+    sr_near = cv2.resize(lr256, (512, 512), interpolation=cv2.INTER_NEAREST)
+    sr_linear = cv2.resize(lr256, (512, 512), interpolation=cv2.INTER_LINEAR)
+    sr_cubic = cv2.resize(lr256, (512, 512), interpolation=cv2.INTER_CUBIC)
+    
+    p_near = calculate_psnr(hr, sr_near)
+    p_lin = calculate_psnr(hr, sr_linear)
+    p_cub = calculate_psnr(hr, sr_cubic)
+    print(f"Image {i:<9} | {p_near:<12.2f} | {p_lin:<12.2f} | {p_cub:<12.2f}")
+print("=" * 60)
+'''
+
