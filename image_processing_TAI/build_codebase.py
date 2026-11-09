@@ -698,3 +698,146 @@ for i in range(1, min(6, len(hr_files) + 1)):
 print("=" * 60)
 '''
 
+# =====================================================================
+# TP3 FILES
+# =====================================================================
+FILES["TP3/TP3_Exo1.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+im1 = cv2.imread('Images/compteur.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Global Otsu
+otsu_threshold, im2 = cv2.threshold(im1, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+# Sauvola
+def binSauvola(im, k=0.04, R=128, tailleFen=15):
+    rad = tailleFen // 2
+    padded = np.pad(im.astype(np.float64), rad, mode='reflect')
+    out = np.zeros_like(im)
+    
+    ii = np.zeros((padded.shape[0] + 1, padded.shape[1] + 1), dtype=np.float64)
+    ii2 = np.zeros_like(ii)
+    ii[1:, 1:] = np.cumsum(np.cumsum(padded, axis=0), axis=1)
+    ii2[1:, 1:] = np.cumsum(np.cumsum(padded ** 2, axis=0), axis=1)
+    
+    h, w = im.shape
+    area = tailleFen * tailleFen
+    
+    for y in range(h):
+        for x in range(w):
+            s = ii[y + tailleFen, x + tailleFen] + ii[y, x] - ii[y, x + tailleFen] - ii[y + tailleFen, x]
+            s2 = ii2[y + tailleFen, x + tailleFen] + ii2[y, x] - ii2[y, x + tailleFen] - ii2[y + tailleFen, x]
+            mean = s / area
+            var = max(0.0, (s2 / area) - (mean ** 2))
+            std = np.sqrt(var)
+            thresh = mean * (1.0 + k * ((std / R) - 1.0))
+            out[y, x] = 255 if im[y, x] > thresh else 0
+            
+    return out
+
+im3 = binSauvola(im1, k=0.04, R=128, tailleFen=15)
+
+# Connected components
+num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(cv2.bitwise_not(im3))
+print(f"[TP3_Exo1] Connected components: {num_labels - 1}")
+'''
+
+FILES["TP3/TP3_Exo2.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+im = cv2.imread('Images/camera-man.jpg', cv2.IMREAD_GRAYSCALE)
+
+def non_maximum_suppression(magnitude, orientation_rad):
+    h, w = magnitude.shape
+    nms = np.zeros((h, w), dtype=np.float32)
+    angle = np.rad2deg(orientation_rad) % 180
+
+    for i in range(1, h - 1):
+        for j in range(1, w - 1):
+            q, r = 255, 255
+            a = angle[i, j]
+            if (0 <= a < 22.5) or (157.5 <= a <= 180):
+                q, r = magnitude[i, j + 1], magnitude[i, j - 1]
+            elif 22.5 <= a < 67.5:
+                q, r = magnitude[i + 1, j - 1], magnitude[i - 1, j + 1]
+            elif 67.5 <= a < 112.5:
+                q, r = magnitude[i + 1, j], magnitude[i - 1, j]
+            elif 112.5 <= a < 157.5:
+                q, r = magnitude[i - 1, j - 1], magnitude[i + 1, j + 1]
+
+            nms[i, j] = magnitude[i, j] if (magnitude[i, j] >= q and magnitude[i, j] >= r) else 0
+    return nms
+
+def hysteresis_threshold(img, t_low=30, t_high=70):
+    h, w = img.shape
+    out = np.zeros((h, w), dtype=np.uint8)
+    strong_i, strong_j = np.where(img >= t_high)
+    weak_i, weak_j = np.where((img >= t_low) & (img < t_high))
+    out[strong_i, strong_j] = 255
+    out[weak_i, weak_j] = 50
+    
+    for i in range(1, h - 1):
+        for j in range(1, w - 1):
+            if out[i, j] == 50:
+                out[i, j] = 255 if (out[i-1:i+2, j-1:j+2] == 255).any() else 0
+    return out
+
+def generic_edge_detection(image, kx, ky, sb=30, sh=70):
+    gx = cv2.filter2D(image.astype(np.float32), -1, kx)
+    gy = cv2.filter2D(image.astype(np.float32), -1, ky)
+    mag = np.hypot(gx, gy)
+    ori = np.arctan2(gy, gx)
+    nms = non_maximum_suppression(mag, ori)
+    return hysteresis_threshold(nms, sb, sh)
+
+def sobel_edge_detection(im, sb=30, sh=70):
+    kx = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=np.float32)
+    ky = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=np.float32)
+    return generic_edge_detection(im, kx, ky, sb, sh)
+
+edges_sobel = sobel_edge_detection(im)
+edges_canny = cv2.Canny(im, 30, 70)
+print("[TP3_Exo2] Edge detectors executed successfully.")
+'''
+
+FILES["TP3/TP3_Exo3.py"] = '''from collections import deque
+import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+im1 = cv2.imread('Images/Cerveau_AVC1.JPG', cv2.IMREAD_GRAYSCALE)
+imb = cv2.GaussianBlur(im1, (5, 5), 4)
+
+def region_growing(img, seed_point=(260, 140), seuil=15):
+    h, w = img.shape
+    mask = np.zeros((h, w), dtype=np.uint8)
+    visited = np.zeros((h, w), dtype=bool)
+    
+    queue = deque([seed_point])
+    visited[seed_point[1], seed_point[0]] = True
+    mask[seed_point[1], seed_point[0]] = 255
+    seed_val = float(img[seed_point[1], seed_point[0]])
+    
+    while queue:
+        cx, cy = queue.popleft()
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
+            nx, ny = cx + dx, cy + dy
+            if 0 <= nx < w and 0 <= ny < h and not visited[ny, nx]:
+                visited[ny, nx] = True
+                if abs(float(img[ny, nx]) - seed_val) <= seuil:
+                    mask[ny, nx] = 255
+                    queue.append((nx, ny))
+    return mask
+
+lesion_mask = region_growing(imb, seed_point=(260, 140), seuil=15)
+print("[TP3_Exo3] Region growing completed successfully.")
+'''
+
