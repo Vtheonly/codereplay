@@ -14,3 +14,7 @@ for ksize in [3, 5, 7]:
     dilated = cv2.dilate(imb1, kernel)
     opened = cv2.morphologyEx(imb1, cv2.MORPH_OPEN, kernel)
     closed = cv2.morphologyEx(imb1, cv2.MORPH_CLOSE, kernel)
+
+# 2) Cell separation and counting
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+cleaned = cv2.morphologyEx(imb1, cv2.MORPH_OPEN, kernel, iterations=2)
