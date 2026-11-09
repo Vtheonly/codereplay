@@ -100,3 +100,6 @@ def generate_all_fixtures(base_dir="Images"):
             lr128 = cv2.resize(hr, (128, 128), interpolation=cv2.INTER_AREA)
             cv2.imwrite(lr256_path, lr256)
             cv2.imwrite(lr128_path, lr128)
+
+if __name__ == "__main__":
+    generate_all_fixtures()
