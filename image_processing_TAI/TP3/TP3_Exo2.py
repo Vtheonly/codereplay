@@ -34,3 +34,9 @@ def hysteresis_threshold(img, t_low=30, t_high=70):
     weak_i, weak_j = np.where((img >= t_low) & (img < t_high))
     out[strong_i, strong_j] = 255
     out[weak_i, weak_j] = 50
+    
+    for i in range(1, h - 1):
+        for j in range(1, w - 1):
+            if out[i, j] == 50:
+                out[i, j] = 255 if (out[i-1:i+2, j-1:j+2] == 255).any() else 0
+    return out
