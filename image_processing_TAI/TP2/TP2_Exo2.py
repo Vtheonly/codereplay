@@ -27,3 +27,15 @@ def filtreMoyenne(image, taille_masque):
         for x in range(image.shape[1]):
             res[y, x] = int(round(np.mean(padded[y:y + taille_masque, x:x + taille_masque])))
     return res
+
+# 3) Custom Median Filter
+def filtreMedian(image, taille_voisinage):
+    if taille_voisinage % 2 == 0:
+        raise ValueError("Neighborhood size must be odd")
+    rad = taille_voisinage // 2
+    padded = np.pad(image, rad, mode='reflect')
+    res = np.zeros_like(image)
+    for y in range(image.shape[0]):
+        for x in range(image.shape[1]):
+            res[y, x] = int(np.median(padded[y:y + taille_voisinage, x:x + taille_voisinage]))
+    return res
