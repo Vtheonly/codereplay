@@ -31,4 +31,11 @@ try:
     skeleton = cv2.ximgproc.thinning(imb1, thinningType=cv2.ximgproc.THINNING_ZHANGSUEN)
     print("[TP2_Exo4] Applied cv2.ximgproc.thinning (Zhang-Suen).")
 except AttributeError:
-    pass
+    # Custom Zhang-Suen implementation fallback
+    def zhang_suen_thinning(binary_img):
+        img = (binary_img > 0).astype(np.uint8)
+        change = True
+        while change:
+            change = False
+            for step in [1, 2]:
+                marked = []
