@@ -32,3 +32,5 @@ def binSauvola(im, k=0.04, R=128, tailleFen=15):
             std = np.sqrt(var)
             thresh = mean * (1.0 + k * ((std / R) - 1.0))
             out[y, x] = 255 if im[y, x] > thresh else 0
+            
+    return out
