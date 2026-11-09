@@ -19,3 +19,9 @@ hist2_R = cv2.calcHist([im2], [2], None, [256], [0, 256])
 def custom_calc_hist(channel_2d):
     counts = np.bincount(channel_2d.ravel(), minlength=256)
     return counts.astype(np.float32).reshape(-1, 1)
+
+histp1 = custom_calc_hist(im1)
+b, g, r = cv2.split(im2)
+histp2_B = custom_calc_hist(b)
+histp2_G = custom_calc_hist(g)
+histp2_R = custom_calc_hist(r)
