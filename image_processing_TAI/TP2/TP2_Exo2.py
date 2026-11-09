@@ -102,3 +102,6 @@ bench("Median 7x7", "S&P", cv2.medianBlur(im3, 7))
 # Bilateral
 bench("Bilateral d=7", "Gaussian", cv2.bilateralFilter(im2, 7, 40, 40))
 bench("Bilateral d=7", "S&P", cv2.bilateralFilter(im3, 7, 40, 40))
+
+# Adaptive
+bench("Adaptive Mean 5x5", "Gaussian", filtreMoyenne_adaptative(im2, 5, 100.0))
