@@ -49,3 +49,15 @@ def filtreNagao(im, taille_filtre=5):
             output[y, x] = int(round(best_mean))
 
     return output
+
+im1 = cv2.imread('Images/cameraman.bmp', cv2.IMREAD_GRAYSCALE)
+im2 = cv2.imread('Images/cameraman_bruit_gauss_sig0_001.bmp', cv2.IMREAD_GRAYSCALE)
+im3 = cv2.imread('Images/cameraman_bruit_sel_poivre_p_10.bmp', cv2.IMREAD_GRAYSCALE)
+
+print("[+] Running Nagao Filter across window scales...")
+for size in [5, 7]:
+    res_gauss = filtreNagao(im2, taille_filtre=size)
+    res_sp = filtreNagao(im3, taille_filtre=size)
+    p_gauss = cv2.PSNR(im1, res_gauss)
+    p_sp = cv2.PSNR(im1, res_sp)
+    print(f"Nagao {size}x{size} -> PSNR on Gaussian: {p_gauss:.2f} dB | S&P: {p_sp:.2f} dB")
