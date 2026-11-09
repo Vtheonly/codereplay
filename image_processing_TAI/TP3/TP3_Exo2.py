@@ -40,3 +40,11 @@ def hysteresis_threshold(img, t_low=30, t_high=70):
             if out[i, j] == 50:
                 out[i, j] = 255 if (out[i-1:i+2, j-1:j+2] == 255).any() else 0
     return out
+
+def generic_edge_detection(image, kx, ky, sb=30, sh=70):
+    gx = cv2.filter2D(image.astype(np.float32), -1, kx)
+    gy = cv2.filter2D(image.astype(np.float32), -1, ky)
+    mag = np.hypot(gx, gy)
+    ori = np.arctan2(gy, gx)
+    nms = non_maximum_suppression(mag, ori)
+    return hysteresis_threshold(nms, sb, sh)
