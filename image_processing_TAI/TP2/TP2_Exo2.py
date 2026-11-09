@@ -53,3 +53,4 @@ def filtreMoyenne_integral(image, taille_masque):
             + ii[0:h, 0:w]
             - ii[0:h, taille_masque:w + taille_masque]
             - ii[taille_masque:h + taille_masque, 0:w])
+    return np.clip(np.round(sums / area), 0, 255).astype(np.uint8)
