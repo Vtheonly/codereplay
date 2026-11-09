@@ -28,3 +28,7 @@ for s in SCRIPTS:
         print(f"[!] FAILED: {s}")
         sys.exit(res.returncode)
     print(f"[✓] PASSED: {s}\n")
+
+print("=" * 60)
+print("[✓] ALL 13 LAB EXERCISES EXECUTED SUCCESSFULLY WITHOUT ERRORS.")
+print("=" * 60)
