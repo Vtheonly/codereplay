@@ -82,3 +82,9 @@ results = []
 def bench(name, target, out):
     p = calculate_psnr(im1, out)
     results.append((name, target, p))
+
+# Mean
+bench("Mean 3x3", "Gaussian", cv2.blur(im2, (3, 3)))
+bench("Mean 5x5", "Gaussian", cv2.blur(im2, (5, 5)))
+bench("Mean 7x7", "Gaussian", cv2.blur(im2, (7, 7)))
+bench("Fast Integral Mean 7x7", "Gaussian", filtreMoyenne_integral(im2, 7))
