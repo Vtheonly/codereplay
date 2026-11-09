@@ -35,3 +35,11 @@ print("[TP1_Exo5] Verified: Custom histogram computation matches OpenCV 100%.")
 
 # 3) Display with matplotlib
 fig, axs = plt.subplots(2, 2, figsize=(12, 8))
+axs[0, 0].imshow(im1, cmap='gray')
+axs[0, 0].set_title('im1: Cameraman')
+axs[0, 0].axis('off')
+
+axs[0, 1].plot(hist1, color='black', label='Grayscale')
+axs[0, 1].set_title('Histogram im1')
+axs[0, 1].set_xlim([0, 256])
+axs[0, 1].legend()
