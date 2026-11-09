@@ -8,3 +8,7 @@ generate_all_fixtures()
 img = cv2.imread('Images/BoatsColor.bmp')
 if img is None:
     raise FileNotFoundError("Could not find Images/BoatsColor.bmp")
+
+# 2. Loading / converting to grayscale
+gray_img = cv2.imread('Images/BoatsColor.bmp', cv2.IMREAD_GRAYSCALE)
+gray_img2 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
