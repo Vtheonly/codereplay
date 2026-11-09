@@ -24,3 +24,6 @@ def expansionHisto(image, seuil=0, y_min=0, y_max=255):
     
     res = (image.astype(np.float64) - x_min) / (x_max - x_min) * (y_max - y_min) + y_min
     return np.clip(np.round(res), y_min, y_max).astype(np.uint8)
+
+im1_exp = expansionHisto(im1, seuil=5)
+imc1_exp = expansionHisto(imc1, seuil=5)
