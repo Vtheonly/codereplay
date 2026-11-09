@@ -59,3 +59,11 @@ except AttributeError:
                         else:
                             if p2 * p4 * p8 == 0 and p2 * p6 * p8 == 0:
                                 marked.append((i, j))
+                if marked:
+                    change = True
+                    for r, c in marked:
+                        img[r, c] = 0
+        return img * 255
+
+    skeleton = zhang_suen_thinning(imb1)
+    print("[TP2_Exo4] Applied custom Zhang-Suen fallback.")
