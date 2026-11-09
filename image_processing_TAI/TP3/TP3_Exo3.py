@@ -22,3 +22,9 @@ def region_growing(img, seed_point=(260, 140), seuil=15):
         cx, cy = queue.popleft()
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
             nx, ny = cx + dx, cy + dy
+            if 0 <= nx < w and 0 <= ny < h and not visited[ny, nx]:
+                visited[ny, nx] = True
+                if abs(float(img[ny, nx]) - seed_val) <= seuil:
+                    mask[ny, nx] = 255
+                    queue.append((nx, ny))
+    return mask
