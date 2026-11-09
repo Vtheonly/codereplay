@@ -16,3 +16,10 @@ NAGAO_OFFSETS = [
     [(0, 0), (1, 0), (1, 1), (1, 2), (2, 1), (2, 2), (0, 1)],
     [(0, 0), (1, 0), (1, -1), (1, -2), (2, -1), (2, -2), (0, -1)]
 ]
+
+def filtreNagao(im, taille_filtre=5):
+    h, w = im.shape
+    rad = taille_filtre // 2
+    scale = rad / 2.0
+    padded = np.pad(im.astype(np.float64), rad, mode='reflect')
+    output = np.zeros((h, w), dtype=np.uint8)
