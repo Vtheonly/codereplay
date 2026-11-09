@@ -39,3 +39,10 @@ def filtreMedian(image, taille_voisinage):
         for x in range(image.shape[1]):
             res[y, x] = int(np.median(padded[y:y + taille_voisinage, x:x + taille_voisinage]))
     return res
+
+# Homework: Fast Integral Image Mean Filter (O(1) per pixel)
+def filtreMoyenne_integral(image, taille_masque):
+    rad = taille_masque // 2
+    h, w = image.shape
+    padded = np.pad(image.astype(np.float64), rad, mode='reflect')
+    ii = np.zeros((padded.shape[0] + 1, padded.shape[1] + 1), dtype=np.float64)
