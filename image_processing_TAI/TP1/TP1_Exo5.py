@@ -25,3 +25,10 @@ b, g, r = cv2.split(im2)
 histp2_B = custom_calc_hist(b)
 histp2_G = custom_calc_hist(g)
 histp2_R = custom_calc_hist(r)
+
+# Verify custom vs OpenCV
+np.testing.assert_array_equal(hist1, histp1)
+np.testing.assert_array_equal(hist2_B, histp2_B)
+np.testing.assert_array_equal(hist2_G, histp2_G)
+np.testing.assert_array_equal(hist2_R, histp2_R)
+print("[TP1_Exo5] Verified: Custom histogram computation matches OpenCV 100%.")
