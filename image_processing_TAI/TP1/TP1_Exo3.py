@@ -27,3 +27,11 @@ imgb3 = np.where(img_ng > 80, np.uint8(255), np.uint8(0))
 assert np.array_equal(imgb1, imgb2)
 assert np.array_equal(imgb1, imgb3)
 print("[TP1_Exo3] Verified: All binarization implementations match bit-for-bit.")
+
+cv2.imwrite('Images/imgb1.jpg', imgb1)
+
+cv2.imshow('Original Grayscale', img_ng)
+cv2.imshow('Binary OpenCV (imgb1)', imgb1)
+cv2.imshow('Binary Loop (imgb2)', imgb2)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
