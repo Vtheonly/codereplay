@@ -76,3 +76,9 @@ def filtreMoyenne_adaptative(image, taille_masque=5, noise_var=100.0):
 im1 = cv2.imread('Images/cameraman.bmp', cv2.IMREAD_GRAYSCALE)
 im2 = cv2.imread('Images/cameraman_bruit_gauss_sig0_001.bmp', cv2.IMREAD_GRAYSCALE)
 im3 = cv2.imread('Images/cameraman_bruit_sel_poivre_p_10.bmp', cv2.IMREAD_GRAYSCALE)
+
+# Benchmark filters
+results = []
+def bench(name, target, out):
+    p = calculate_psnr(im1, out)
+    results.append((name, target, p))
