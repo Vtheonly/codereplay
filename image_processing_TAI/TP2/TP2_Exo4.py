@@ -25,3 +25,10 @@ sure_fg = np.uint8(sure_fg)
 num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(sure_fg)
 cell_count = num_labels - 1
 print(f"[TP2_Exo4] Estimated red blood cell count: {cell_count}")
+
+# 3) Skeletonization
+try:
+    skeleton = cv2.ximgproc.thinning(imb1, thinningType=cv2.ximgproc.THINNING_ZHANGSUEN)
+    print("[TP2_Exo4] Applied cv2.ximgproc.thinning (Zhang-Suen).")
+except AttributeError:
+    pass
