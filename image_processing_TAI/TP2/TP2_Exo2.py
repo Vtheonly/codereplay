@@ -22,3 +22,4 @@ def filtreMoyenne(image, taille_masque):
         raise ValueError("Mask size must be odd")
     rad = taille_masque // 2
     padded = np.pad(image.astype(np.float64), rad, mode='reflect')
+    res = np.zeros_like(image, dtype=np.uint8)
