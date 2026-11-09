@@ -16,3 +16,7 @@ SCRIPTS = [
     "TP3/TP3_Exo2.py",
     "TP3/TP3_Exo3.py",
 ]
+
+print("=" * 60)
+print("EXECUTING FULL CODEBASE VERIFICATION SUITE")
+print("=" * 60)
