@@ -53,3 +53,9 @@ except AttributeError:
                         a = sum(seq[k] == 0 and seq[k+1] == 1 for k in range(8))
                         if a != 1:
                             continue
+                        if step == 1:
+                            if p2 * p4 * p6 == 0 and p4 * p6 * p8 == 0:
+                                marked.append((i, j))
+                        else:
+                            if p2 * p4 * p8 == 0 and p2 * p6 * p8 == 0:
+                                marked.append((i, j))
