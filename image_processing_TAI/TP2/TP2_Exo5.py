@@ -33,3 +33,7 @@ im1_eq = cv2.equalizeHist(im1)
 imc1_ycrcb = cv2.cvtColor(imc1, cv2.COLOR_BGR2YCrCb)
 imc1_ycrcb[:, :, 0] = cv2.equalizeHist(imc1_ycrcb[:, :, 0])
 imc1_eq = cv2.cvtColor(imc1_ycrcb, cv2.COLOR_YCrCb2BGR)
+
+# CLAHE
+clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+im1_clahe = clahe.apply(im1)
