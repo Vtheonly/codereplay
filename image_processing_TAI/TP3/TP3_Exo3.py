@@ -17,3 +17,8 @@ def region_growing(img, seed_point=(260, 140), seuil=15):
     visited[seed_point[1], seed_point[0]] = True
     mask[seed_point[1], seed_point[0]] = 255
     seed_val = float(img[seed_point[1], seed_point[0]])
+    
+    while queue:
+        cx, cy = queue.popleft()
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
+            nx, ny = cx + dx, cy + dy
