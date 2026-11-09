@@ -73,3 +73,13 @@ def generate_all_fixtures(base_dir="Images"):
         cv2.ellipse(img, (175, 175), (110, 130), 0, 0, 360, 70, -1)
         cv2.circle(img, (260, 140), 25, 215, -1)
         cv2.imwrite(p, img)
+
+    # 8. Super-Resolution Dataset Structure
+    sr_base = os.path.join(base_dir, "Images_TP2_EXO6_SR")
+    dirs = [
+        os.path.join(sr_base, "HR_GT_512x512"),
+        os.path.join(sr_base, "LR_256x256"),
+        os.path.join(sr_base, "LR_128x128"),
+    ]
+    for d in dirs:
+        os.makedirs(d, exist_ok=True)
