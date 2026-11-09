@@ -13,3 +13,6 @@ def expansionHisto(image, seuil=0, y_min=0, y_max=255):
         channels = cv2.split(image)
         expanded = [expansionHisto(c, seuil, y_min, y_max) for c in channels]
         return cv2.merge(expanded)
+    
+    hist = np.bincount(image.ravel(), minlength=256)
+    valid_indices = np.where(hist > seuil)[0]
