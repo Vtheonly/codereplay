@@ -20,3 +20,8 @@ im3 = im1[30:150, 200:400].copy()
 im4 = im1.copy()
 cv2.rectangle(im4, (200, 30), (400, 150), (255, 0, 0), thickness=2)
 cv2.putText(im4, 'My rectangle', (200, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
+# 6) Rotate im1 by 90 degrees -> im5
+center = (w / 2.0, h / 2.0)
+matrix = cv2.getRotationMatrix2D(center, 90.0, 1.0)
+im5 = cv2.warpAffine(im1, matrix, (w, h))
