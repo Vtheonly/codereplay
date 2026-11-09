@@ -32,3 +32,15 @@ def generate_all_fixtures(base_dir="Images"):
         cv2.circle(img, (320, 140), 85, (25, 30, 230), -1)
         cv2.circle(img, (250, 210), 65, (15, 210, 245), -1)
         cv2.imwrite(p, img)
+
+    # 4. cameraman.bmp / camera-man.jpg
+    for fname in ["cameraman.bmp", "camera-man.jpg"]:
+        p = os.path.join(base_dir, fname)
+        if not os.path.exists(p):
+            img = np.zeros((256, 256), dtype=np.uint8)
+            img[:130, :] = 200
+            img[130:, :] = 50
+            cv2.circle(img, (128, 90), 32, 20, -1)
+            cv2.rectangle(img, (110, 122), (146, 220), 20, -1)
+            cv2.line(img, (140, 130), (200, 220), 10, 4)
+            cv2.imwrite(p, img)
