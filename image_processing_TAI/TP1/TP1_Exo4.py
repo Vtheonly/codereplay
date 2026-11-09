@@ -12,3 +12,6 @@ print(f"Height: {h}, Width: {w}")
 
 # 3) Resize by dividing size by 2 -> im2
 im2 = cv2.resize(im1, (w // 2, h // 2), interpolation=cv2.INTER_LINEAR)
+
+# 4) Crop region [y_start=30:y_end=150, x_start=200:x_end=400] -> im3
+im3 = im1[30:150, 200:400].copy()
