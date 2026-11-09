@@ -1,0 +1,1 @@
+from .generate_fixtures import generate_all_fixtures

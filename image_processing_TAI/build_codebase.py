@@ -1,0 +1,903 @@
+#!/usr/bin/env python3
+"""
+Complete Automated Codebase Generator for TAI (Advanced Image Processing)
+Covers all exercises across TP1, TP2, and TP3.
+"""
+
+import os
+import sys
+
+
+
+
+
+FILES = {}
+
+# =====================================================================
+# REQUIREMENTS
+# =====================================================================
+FILES["requirements.txt"] = """numpy>=1.24.0
+opencv-python>=4.8.0
+opencv-contrib-python>=4.8.0
+matplotlib>=3.7.0
+scipy>=1.10.0
+"""
+
+# =====================================================================
+# FIXTURE GENERATOR UTILITY
+# =====================================================================
+FILES["utils/generate_fixtures.py"] = '''import os
+import cv2
+import numpy as np
+
+def generate_all_fixtures(base_dir="Images"):
+    os.makedirs(base_dir, exist_ok=True)
+
+    # 1. BoatsColor.bmp
+    p = os.path.join(base_dir, "BoatsColor.bmp")
+    if not os.path.exists(p):
+        img = np.zeros((300, 400, 3), dtype=np.uint8)
+        img[:150, :] = [235, 180, 100]  # Sky (BGR)
+        img[150:, :] = [180, 100, 30]   # Water
+        cv2.circle(img, (200, 150), 40, (30, 30, 220), -1)  # Boat hull/buoy
+        cv2.imwrite(p, img)
+
+    # 2. flower.bmp / counter.jpg / compteur.jpg
+    for fname in ["flower.bmp", "counter.jpg", "compteur.jpg"]:
+        p = os.path.join(base_dir, fname)
+        if not os.path.exists(p):
+            img = np.full((256, 256), 45, dtype=np.uint8)
+            cv2.putText(img, "48720", (30, 140), cv2.FONT_HERSHEY_SIMPLEX, 1.8, 220, 4)
+            cv2.rectangle(img, (20, 60), (236, 180), 180, 2)
+            cv2.imwrite(p, img)
+
+    # 3. pepper.bmp
+    p = os.path.join(base_dir, "pepper.bmp")
+    if not os.path.exists(p):
+        img = np.zeros((300, 500, 3), dtype=np.uint8)
+        img[:] = [70, 40, 30]
+        cv2.circle(img, (180, 150), 75, (35, 190, 45), -1)
+        cv2.circle(img, (320, 140), 85, (25, 30, 230), -1)
+        cv2.circle(img, (250, 210), 65, (15, 210, 245), -1)
+        cv2.imwrite(p, img)
+
+    # 4. cameraman.bmp / camera-man.jpg
+    for fname in ["cameraman.bmp", "camera-man.jpg"]:
+        p = os.path.join(base_dir, fname)
+        if not os.path.exists(p):
+            img = np.zeros((256, 256), dtype=np.uint8)
+            img[:130, :] = 200
+            img[130:, :] = 50
+            cv2.circle(img, (128, 90), 32, 20, -1)
+            cv2.rectangle(img, (110, 122), (146, 220), 20, -1)
+            cv2.line(img, (140, 130), (200, 220), 10, 4)
+            cv2.imwrite(p, img)
+
+    # 5. Globules_rouges.jpg
+    p = os.path.join(base_dir, "Globules_rouges.jpg")
+    if not os.path.exists(p):
+        img = np.full((350, 350), 210, dtype=np.uint8)
+        rng = np.random.default_rng(42)
+        for _ in range(40):
+            cx, cy = rng.integers(30, 320, size=2)
+            r = rng.integers(14, 22)
+            cv2.circle(img, (int(cx), int(cy)), int(r), int(rng.integers(30, 70)), -1)
+        cv2.imwrite(p, img)
+
+    # 6. glaucome-haut-gauche.jpg
+    p = os.path.join(base_dir, "glaucome-haut-gauche.jpg")
+    if not os.path.exists(p):
+        img = np.zeros((300, 300, 3), dtype=np.uint8)
+        img[:] = [10, 30, 110]
+        cv2.circle(img, (150, 150), 90, (30, 140, 240), -1)
+        cv2.circle(img, (130, 130), 40, (180, 230, 255), -1)
+        cv2.imwrite(p, img)
+
+    # 7. Cerveau_AVC1.JPG
+    p = os.path.join(base_dir, "Cerveau_AVC1.JPG")
+    if not os.path.exists(p):
+        img = np.zeros((350, 350), dtype=np.uint8)
+        cv2.ellipse(img, (175, 175), (130, 150), 0, 0, 360, 120, -1)
+        cv2.ellipse(img, (175, 175), (110, 130), 0, 0, 360, 70, -1)
+        cv2.circle(img, (260, 140), 25, 215, -1)
+        cv2.imwrite(p, img)
+
+    # 8. Super-Resolution Dataset Structure
+    sr_base = os.path.join(base_dir, "Images_TP2_EXO6_SR")
+    dirs = [
+        os.path.join(sr_base, "HR_GT_512x512"),
+        os.path.join(sr_base, "LR_256x256"),
+        os.path.join(sr_base, "LR_128x128"),
+    ]
+    for d in dirs:
+        os.makedirs(d, exist_ok=True)
+
+    for i in range(1, 24):
+        hr_path = os.path.join(dirs[0], f"HR_GT_{i}.jpg")
+        lr256_path = os.path.join(dirs[1], f"LR_256_{i}.jpg")
+        lr128_path = os.path.join(dirs[2], f"LR_128_{i}.jpg")
+
+        if not os.path.exists(hr_path):
+            hr = np.full((512, 512), 240, dtype=np.uint8)
+            cv2.putText(hr, f"Doc Text {i}", (40, 150), cv2.FONT_HERSHEY_SIMPLEX, 2.0, 20, 4)
+            cv2.putText(hr, "will sagen: de", (40, 260), cv2.FONT_HERSHEY_COMPLEX, 1.6, 30, 3)
+            cv2.putText(hr, "verstehe auch d", (40, 360), cv2.FONT_HERSHEY_COMPLEX, 1.6, 30, 3)
+            cv2.imwrite(hr_path, hr)
+
+            lr256 = cv2.resize(hr, (256, 256), interpolation=cv2.INTER_AREA)
+            lr128 = cv2.resize(hr, (128, 128), interpolation=cv2.INTER_AREA)
+            cv2.imwrite(lr256_path, lr256)
+            cv2.imwrite(lr128_path, lr128)
+
+if __name__ == "__main__":
+    generate_all_fixtures()
+'''
+
+FILES["utils/__init__.py"] = "from .generate_fixtures import generate_all_fixtures\n"
+
+# =====================================================================
+# TP1 FILES
+# =====================================================================
+FILES["TP1/TP1_Exo2.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+# 1. Reading an image
+img = cv2.imread('Images/BoatsColor.bmp')
+if img is None:
+    raise FileNotFoundError("Could not find Images/BoatsColor.bmp")
+
+# 2. Loading / converting to grayscale
+gray_img = cv2.imread('Images/BoatsColor.bmp', cv2.IMREAD_GRAYSCALE)
+gray_img2 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# 3. Read pixel at (100, 150)
+pixel = img[100, 150]
+print(f"The BGR values of Pixel at (100, 150) are: {pixel}")
+
+# 4. Dimensions
+height, width, channels = img.shape
+print(f"Height: {height} pixels")
+print(f"Width: {width} pixels")
+print(f"Channels: {channels}")
+
+# 5. Modifying center horizontal scanline to pure red [B=0, G=0, R=255]
+annotated = img.copy()
+center_row = height // 2
+annotated[center_row, :] = [0, 0, 255]
+
+cv2.imshow('Input Image', img)
+cv2.imshow('Image loaded in grayscale', gray_img)
+cv2.imshow('Image converted to grayscale', gray_img2)
+cv2.imshow('Centerline Red', annotated)
+
+print("[TP1_Exo2] Displaying. Press any key to continue...")
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+'''
+
+FILES["TP1/TP1_Exo3.py"] = '''import os
+import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+# Read target image
+path = 'Images/counter.jpg' if os.path.exists('Images/counter.jpg') else 'Images/flower.bmp'
+img = cv2.imread(path)
+img_ng = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+height, width = img_ng.shape
+
+# Solution 1: OpenCV primitive
+_, imgb1 = cv2.threshold(img_ng, 80, 255, cv2.THRESH_BINARY)
+
+# Solution 2: Explicit manual nested loops
+imgb2 = np.zeros((height, width), dtype=np.uint8)
+for i in range(height):
+    for j in range(width):
+        if img_ng[i, j] > 80:
+            imgb2[i, j] = 255
+
+# Solution 3: Vectorized NumPy
+imgb3 = np.where(img_ng > 80, np.uint8(255), np.uint8(0))
+
+assert np.array_equal(imgb1, imgb2)
+assert np.array_equal(imgb1, imgb3)
+print("[TP1_Exo3] Verified: All binarization implementations match bit-for-bit.")
+
+cv2.imwrite('Images/imgb1.jpg', imgb1)
+
+cv2.imshow('Original Grayscale', img_ng)
+cv2.imshow('Binary OpenCV (imgb1)', imgb1)
+cv2.imshow('Binary Loop (imgb2)', imgb2)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+'''
+
+FILES["TP1/TP1_Exo4.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+# 1) Read image im1
+im1 = cv2.imread('Images/pepper.bmp')
+# 2) Read size (height, width)
+h, w = im1.shape[:2]
+print(f"Height: {h}, Width: {w}")
+
+# 3) Resize by dividing size by 2 -> im2
+im2 = cv2.resize(im1, (w // 2, h // 2), interpolation=cv2.INTER_LINEAR)
+
+# 4) Crop region [y_start=30:y_end=150, x_start=200:x_end=400] -> im3
+im3 = im1[30:150, 200:400].copy()
+
+# 5) Copy im1 -> im4, draw blue rectangle + text "My rectangle" in green at [x=200, y=20]
+im4 = im1.copy()
+cv2.rectangle(im4, (200, 30), (400, 150), (255, 0, 0), thickness=2)
+cv2.putText(im4, 'My rectangle', (200, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
+# 6) Rotate im1 by 90 degrees -> im5
+center = (w / 2.0, h / 2.0)
+matrix = cv2.getRotationMatrix2D(center, 90.0, 1.0)
+im5 = cv2.warpAffine(im1, matrix, (w, h))
+
+# 7) Apply Gaussian blur -> im6
+im6 = cv2.GaussianBlur(im1, (15, 15), 0)
+
+# 8) Display all images
+cv2.imshow('im1 - Original', im1)
+cv2.imshow('im2 - Half Scaled', im2)
+cv2.imshow('im3 - Cropped ROI', im3)
+cv2.imshow('im4 - Annotated', im4)
+cv2.imshow('im5 - Rotated 90', im5)
+cv2.imshow('im6 - Gaussian Blur', im6)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+'''
+
+FILES["TP1/TP1_Exo5.py"] = '''import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+# 1) Read grayscale (im1) and color (im2)
+im1 = cv2.imread('Images/cameraman.bmp', cv2.IMREAD_GRAYSCALE)
+im2 = cv2.imread('Images/pepper.bmp', cv2.IMREAD_COLOR)
+
+# 2) Calculate histograms via cv2.calcHist()
+hist1 = cv2.calcHist([im1], [0], None, [256], [0, 256])
+hist2_B = cv2.calcHist([im2], [0], None, [256], [0, 256])
+hist2_G = cv2.calcHist([im2], [1], None, [256], [0, 256])
+hist2_R = cv2.calcHist([im2], [2], None, [256], [0, 256])
+
+# 4) Custom histogram algorithm
+def custom_calc_hist(channel_2d):
+    counts = np.bincount(channel_2d.ravel(), minlength=256)
+    return counts.astype(np.float32).reshape(-1, 1)
+
+histp1 = custom_calc_hist(im1)
+b, g, r = cv2.split(im2)
+histp2_B = custom_calc_hist(b)
+histp2_G = custom_calc_hist(g)
+histp2_R = custom_calc_hist(r)
+
+# Verify custom vs OpenCV
+np.testing.assert_array_equal(hist1, histp1)
+np.testing.assert_array_equal(hist2_B, histp2_B)
+np.testing.assert_array_equal(hist2_G, histp2_G)
+np.testing.assert_array_equal(hist2_R, histp2_R)
+print("[TP1_Exo5] Verified: Custom histogram computation matches OpenCV 100%.")
+
+# 3) Display with matplotlib
+fig, axs = plt.subplots(2, 2, figsize=(12, 8))
+axs[0, 0].imshow(im1, cmap='gray')
+axs[0, 0].set_title('im1: Cameraman')
+axs[0, 0].axis('off')
+
+axs[0, 1].plot(hist1, color='black', label='Grayscale')
+axs[0, 1].set_title('Histogram im1')
+axs[0, 1].set_xlim([0, 256])
+axs[0, 1].legend()
+
+im2_rgb = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
+axs[1, 0].imshow(im2_rgb)
+axs[1, 0].set_title('im2: Pepper')
+axs[1, 0].axis('off')
+
+axs[1, 1].plot(hist2_R, color='red', label='Red')
+axs[1, 1].plot(hist2_G, color='green', label='Green')
+axs[1, 1].plot(hist2_B, color='blue', label='Blue')
+axs[1, 1].set_title('Color Histograms im2')
+axs[1, 1].set_xlim([0, 256])
+axs[1, 1].legend()
+
+plt.tight_layout()
+plt.show()
+'''
+
+# =====================================================================
+# TP2 FILES
+# =====================================================================
+FILES["TP2/TP2_Exo1.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+def sp_noise(image, prob):
+    output = image.copy()
+    num_channels = 1 if len(image.shape) == 2 else image.shape[2]
+    white = 255 if num_channels == 1 else np.array([255] * num_channels, dtype=np.uint8)
+    black = 0 if num_channels == 1 else np.array([0] * num_channels, dtype=np.uint8)
+
+    probs = np.random.random(output.shape[:2])
+    output[probs < (prob / 2.0)] = black
+    output[probs > 1.0 - (prob / 2.0)] = white
+    return output
+
+# 1) Read grayscale cameraman.bmp into 2D array im1
+im1 = cv2.imread('Images/cameraman.bmp', cv2.IMREAD_GRAYSCALE)
+
+# 2) Additive Gaussian Noise sigma^2 = 100 -> sigma = 10
+gaussian_noise = np.zeros(im1.shape, np.float32)
+cv2.randn(gaussian_noise, 0.0, 10.0)
+im2 = np.clip(im1.astype(np.float32) + gaussian_noise, 0, 255).astype(np.uint8)
+cv2.imwrite('Images/cameraman_bruit_gauss_sig0_001.bmp', im2)
+
+# 3) Salt & Pepper noise p = 10% -> im3
+im3 = sp_noise(im1, prob=0.10)
+cv2.imwrite('Images/cameraman_bruit_sel_poivre_p_10.bmp', im3)
+
+# 4) Display and compare
+cv2.imshow('im1 - Original', im1)
+cv2.imshow('im2 - Gaussian Noise (var=100)', im2)
+cv2.imshow('im3 - Salt & Pepper Noise (p=0.10)', im3)
+print("[TP2_Exo1] Displaying noise models. Press any key to continue...")
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+'''
+
+FILES["TP2/TP2_Exo2.py"] = '''import math
+import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+# MSE and PSNR metrics
+def calculate_mse(img1, img2):
+    diff = img1.astype(np.float64) - img2.astype(np.float64)
+    return float(np.mean(diff ** 2))
+
+def calculate_psnr(orig, deg, r=255.0):
+    mse = calculate_mse(orig, deg)
+    if mse == 0:
+        return float('inf')
+    return 10.0 * math.log10((r ** 2) / mse)
+
+# 2) Custom Mean Filter
+def filtreMoyenne(image, taille_masque):
+    if taille_masque % 2 == 0:
+        raise ValueError("Mask size must be odd")
+    rad = taille_masque // 2
+    padded = np.pad(image.astype(np.float64), rad, mode='reflect')
+    res = np.zeros_like(image, dtype=np.uint8)
+    for y in range(image.shape[0]):
+        for x in range(image.shape[1]):
+            res[y, x] = int(round(np.mean(padded[y:y + taille_masque, x:x + taille_masque])))
+    return res
+
+# 3) Custom Median Filter
+def filtreMedian(image, taille_voisinage):
+    if taille_voisinage % 2 == 0:
+        raise ValueError("Neighborhood size must be odd")
+    rad = taille_voisinage // 2
+    padded = np.pad(image, rad, mode='reflect')
+    res = np.zeros_like(image)
+    for y in range(image.shape[0]):
+        for x in range(image.shape[1]):
+            res[y, x] = int(np.median(padded[y:y + taille_voisinage, x:x + taille_voisinage]))
+    return res
+
+# Homework: Fast Integral Image Mean Filter (O(1) per pixel)
+def filtreMoyenne_integral(image, taille_masque):
+    rad = taille_masque // 2
+    h, w = image.shape
+    padded = np.pad(image.astype(np.float64), rad, mode='reflect')
+    ii = np.zeros((padded.shape[0] + 1, padded.shape[1] + 1), dtype=np.float64)
+    ii[1:, 1:] = np.cumsum(np.cumsum(padded, axis=0), axis=1)
+    
+    area = taille_masque * taille_masque
+    sums = (ii[taille_masque:h + taille_masque, taille_masque:w + taille_masque]
+            + ii[0:h, 0:w]
+            - ii[0:h, taille_masque:w + taille_masque]
+            - ii[taille_masque:h + taille_masque, 0:w])
+    return np.clip(np.round(sums / area), 0, 255).astype(np.uint8)
+
+# Homework: Adaptive Local Mean Filter
+def filtreMoyenne_adaptative(image, taille_masque=5, noise_var=100.0):
+    rad = taille_masque // 2
+    padded = np.pad(image.astype(np.float64), rad, mode='reflect')
+    res = np.zeros_like(image, dtype=np.float64)
+    for y in range(image.shape[0]):
+        for x in range(image.shape[1]):
+            window = padded[y:y + taille_masque, x:x + taille_masque]
+            l_mean = np.mean(window)
+            l_var = np.var(window)
+            if l_var < noise_var:
+                factor = 1.0
+            else:
+                factor = noise_var / l_var
+            res[y, x] = l_mean + (1.0 - factor) * (image[y, x] - l_mean)
+    return np.clip(np.round(res), 0, 255).astype(np.uint8)
+
+# Main
+im1 = cv2.imread('Images/cameraman.bmp', cv2.IMREAD_GRAYSCALE)
+im2 = cv2.imread('Images/cameraman_bruit_gauss_sig0_001.bmp', cv2.IMREAD_GRAYSCALE)
+im3 = cv2.imread('Images/cameraman_bruit_sel_poivre_p_10.bmp', cv2.IMREAD_GRAYSCALE)
+
+# Benchmark filters
+results = []
+def bench(name, target, out):
+    p = calculate_psnr(im1, out)
+    results.append((name, target, p))
+
+# Mean
+bench("Mean 3x3", "Gaussian", cv2.blur(im2, (3, 3)))
+bench("Mean 5x5", "Gaussian", cv2.blur(im2, (5, 5)))
+bench("Mean 7x7", "Gaussian", cv2.blur(im2, (7, 7)))
+bench("Fast Integral Mean 7x7", "Gaussian", filtreMoyenne_integral(im2, 7))
+
+# Gauss
+for s in [2.0, 1.5, 1.0, 0.5]:
+    bench(f"Gauss 3x3 s={s}", "Gaussian", cv2.GaussianBlur(im2, (3, 3), s))
+    bench(f"Gauss 5x5 s={s}", "Gaussian", cv2.GaussianBlur(im2, (5, 5), s))
+
+# Median
+bench("Median 3x3", "S&P", cv2.medianBlur(im3, 3))
+bench("Median 5x5", "S&P", cv2.medianBlur(im3, 5))
+bench("Median 7x7", "S&P", cv2.medianBlur(im3, 7))
+
+# Bilateral
+bench("Bilateral d=7", "Gaussian", cv2.bilateralFilter(im2, 7, 40, 40))
+bench("Bilateral d=7", "S&P", cv2.bilateralFilter(im3, 7, 40, 40))
+
+# Adaptive
+bench("Adaptive Mean 5x5", "Gaussian", filtreMoyenne_adaptative(im2, 5, 100.0))
+
+print("=" * 65)
+print(f"{'FILTER':<30} | {'NOISE TYPE':<12} | {'PSNR (dB)':<10}")
+print("=" * 65)
+for name, ntype, p in results:
+    print(f"{name:<30} | {ntype:<12} | {p:.2f} dB")
+print("=" * 65)
+'''
+
+FILES["TP2/TP2_Exo3.py"] = '''import math
+import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+NAGAO_OFFSETS = [
+    [(0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)],
+    [(0, 0), (-1, 0), (-2, 0), (-1, -1), (-2, -1), (-1, 1), (-2, 1)],
+    [(0, 0), (1, 0), (2, 0), (1, -1), (2, -1), (1, 1), (2, 1)],
+    [(0, 0), (0, 1), (0, 2), (-1, 1), (-1, 2), (1, 1), (1, 2)],
+    [(0, 0), (0, -1), (0, -2), (-1, -1), (-1, -2), (1, -1), (1, -2)],
+    [(0, 0), (-1, 0), (-1, 1), (-1, 2), (-2, 1), (-2, 2), (0, 1)],
+    [(0, 0), (-1, 0), (-1, -1), (-1, -2), (-2, -1), (-2, -2), (0, -1)],
+    [(0, 0), (1, 0), (1, 1), (1, 2), (2, 1), (2, 2), (0, 1)],
+    [(0, 0), (1, 0), (1, -1), (1, -2), (2, -1), (2, -2), (0, -1)]
+]
+
+def filtreNagao(im, taille_filtre=5):
+    h, w = im.shape
+    rad = taille_filtre // 2
+    scale = rad / 2.0
+    padded = np.pad(im.astype(np.float64), rad, mode='reflect')
+    output = np.zeros((h, w), dtype=np.uint8)
+
+    scaled_regions = []
+    for reg in NAGAO_OFFSETS:
+        scaled_reg = set()
+        for dy, dx in reg:
+            s_dy = int(round(dy * scale))
+            s_dx = int(round(dx * scale))
+            scaled_reg.add((s_dy, s_dx))
+        scaled_regions.append(list(scaled_reg))
+
+    for y in range(h):
+        for x in range(w):
+            py, px = y + rad, x + rad
+            best_var = float('inf')
+            best_mean = padded[py, px]
+
+            for reg in scaled_regions:
+                vals = [padded[py + dy, px + dx] for dy, dx in reg]
+                var = np.var(vals)
+                if var < best_var:
+                    best_var = var
+                    best_mean = np.mean(vals)
+
+            output[y, x] = int(round(best_mean))
+
+    return output
+
+im1 = cv2.imread('Images/cameraman.bmp', cv2.IMREAD_GRAYSCALE)
+im2 = cv2.imread('Images/cameraman_bruit_gauss_sig0_001.bmp', cv2.IMREAD_GRAYSCALE)
+im3 = cv2.imread('Images/cameraman_bruit_sel_poivre_p_10.bmp', cv2.IMREAD_GRAYSCALE)
+
+print("[+] Running Nagao Filter across window scales...")
+for size in [5, 7]:
+    res_gauss = filtreNagao(im2, taille_filtre=size)
+    res_sp = filtreNagao(im3, taille_filtre=size)
+    p_gauss = cv2.PSNR(im1, res_gauss)
+    p_sp = cv2.PSNR(im1, res_sp)
+    print(f"Nagao {size}x{size} -> PSNR on Gaussian: {p_gauss:.2f} dB | S&P: {p_sp:.2f} dB")
+'''
+
+FILES["TP2/TP2_Exo4.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+im1 = cv2.imread('Images/Globules_rouges.jpg', cv2.IMREAD_GRAYSCALE)
+_, imb1 = cv2.threshold(im1, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+# 1) Morphological operations
+for ksize in [3, 5, 7]:
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (ksize, ksize))
+    eroded = cv2.erode(imb1, kernel)
+    dilated = cv2.dilate(imb1, kernel)
+    opened = cv2.morphologyEx(imb1, cv2.MORPH_OPEN, kernel)
+    closed = cv2.morphologyEx(imb1, cv2.MORPH_CLOSE, kernel)
+
+# 2) Cell separation and counting
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+cleaned = cv2.morphologyEx(imb1, cv2.MORPH_OPEN, kernel, iterations=2)
+dist_transform = cv2.distanceTransform(cleaned, cv2.DIST_L2, 5)
+_, sure_fg = cv2.threshold(dist_transform, 0.4 * dist_transform.max(), 255, 0)
+sure_fg = np.uint8(sure_fg)
+
+num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(sure_fg)
+cell_count = num_labels - 1
+print(f"[TP2_Exo4] Estimated red blood cell count: {cell_count}")
+
+# 3) Skeletonization
+try:
+    skeleton = cv2.ximgproc.thinning(imb1, thinningType=cv2.ximgproc.THINNING_ZHANGSUEN)
+    print("[TP2_Exo4] Applied cv2.ximgproc.thinning (Zhang-Suen).")
+except AttributeError:
+    # Custom Zhang-Suen implementation fallback
+    def zhang_suen_thinning(binary_img):
+        img = (binary_img > 0).astype(np.uint8)
+        change = True
+        while change:
+            change = False
+            for step in [1, 2]:
+                marked = []
+                for i in range(1, img.shape[0] - 1):
+                    for j in range(1, img.shape[1] - 1):
+                        if img[i, j] == 0:
+                            continue
+                        p2, p3, p4 = img[i-1, j], img[i-1, j+1], img[i, j+1]
+                        p5, p6, p7 = img[i+1, j+1], img[i+1, j], img[i+1, j-1]
+                        p8, p9 = img[i, j-1], img[i-1, j-1]
+                        b = p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9
+                        if not (2 <= b <= 6):
+                            continue
+                        seq = [p2, p3, p4, p5, p6, p7, p8, p9, p2]
+                        a = sum(seq[k] == 0 and seq[k+1] == 1 for k in range(8))
+                        if a != 1:
+                            continue
+                        if step == 1:
+                            if p2 * p4 * p6 == 0 and p4 * p6 * p8 == 0:
+                                marked.append((i, j))
+                        else:
+                            if p2 * p4 * p8 == 0 and p2 * p6 * p8 == 0:
+                                marked.append((i, j))
+                if marked:
+                    change = True
+                    for r, c in marked:
+                        img[r, c] = 0
+        return img * 255
+
+    skeleton = zhang_suen_thinning(imb1)
+    print("[TP2_Exo4] Applied custom Zhang-Suen fallback.")
+'''
+
+FILES["TP2/TP2_Exo5.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+im1 = cv2.imread('Images/compteur.jpg', cv2.IMREAD_GRAYSCALE)
+imc1 = cv2.imread('Images/glaucome-haut-gauche.jpg', cv2.IMREAD_COLOR)
+
+# 1.c) Custom expansionHisto
+def expansionHisto(image, seuil=0, y_min=0, y_max=255):
+    if len(image.shape) == 3:
+        channels = cv2.split(image)
+        expanded = [expansionHisto(c, seuil, y_min, y_max) for c in channels]
+        return cv2.merge(expanded)
+    
+    hist = np.bincount(image.ravel(), minlength=256)
+    valid_indices = np.where(hist > seuil)[0]
+    if len(valid_indices) == 0:
+        return image.copy()
+    x_min, x_max = valid_indices[0], valid_indices[-1]
+    if x_max == x_min:
+        return image.copy()
+    
+    res = (image.astype(np.float64) - x_min) / (x_max - x_min) * (y_max - y_min) + y_min
+    return np.clip(np.round(res), y_min, y_max).astype(np.uint8)
+
+im1_exp = expansionHisto(im1, seuil=5)
+imc1_exp = expansionHisto(imc1, seuil=5)
+
+# Equalization
+im1_eq = cv2.equalizeHist(im1)
+imc1_ycrcb = cv2.cvtColor(imc1, cv2.COLOR_BGR2YCrCb)
+imc1_ycrcb[:, :, 0] = cv2.equalizeHist(imc1_ycrcb[:, :, 0])
+imc1_eq = cv2.cvtColor(imc1_ycrcb, cv2.COLOR_YCrCb2BGR)
+
+# CLAHE
+clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+im1_clahe = clahe.apply(im1)
+
+imc1_lab = cv2.cvtColor(imc1, cv2.COLOR_BGR2LAB)
+imc1_lab[:, :, 0] = clahe.apply(imc1_lab[:, :, 0])
+imc1_clahe = cv2.cvtColor(imc1_lab, cv2.COLOR_LAB2BGR)
+
+print("[TP2_Exo5] Dynamic range and CLAHE processed successfully.")
+'''
+
+FILES["TP2/TP2_Exo6.py"] = '''import os
+import glob
+import math
+import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+def calculate_psnr(orig, deg):
+    mse = np.mean((orig.astype(np.float64) - deg.astype(np.float64)) ** 2)
+    return float('inf') if mse == 0 else 10.0 * math.log10((255.0 ** 2) / mse)
+
+base = "Images/Images_TP2_EXO6_SR"
+hr_files = sorted(glob.glob(os.path.join(base, "HR_GT_512x512", "*.jpg")))
+
+print("=" * 60)
+print(f"{'IMAGE':<15} | {'NEAREST 2x':<12} | {'BILINEAR 2x':<12} | {'BICUBIC 2x':<12}")
+print("=" * 60)
+
+for i in range(1, min(6, len(hr_files) + 1)):
+    hr = cv2.imread(os.path.join(base, "HR_GT_512x512", f"HR_GT_{i}.jpg"), cv2.IMREAD_GRAYSCALE)
+    lr256 = cv2.imread(os.path.join(base, "LR_256x256", f"LR_256_{i}.jpg"), cv2.IMREAD_GRAYSCALE)
+    
+    sr_near = cv2.resize(lr256, (512, 512), interpolation=cv2.INTER_NEAREST)
+    sr_linear = cv2.resize(lr256, (512, 512), interpolation=cv2.INTER_LINEAR)
+    sr_cubic = cv2.resize(lr256, (512, 512), interpolation=cv2.INTER_CUBIC)
+    
+    p_near = calculate_psnr(hr, sr_near)
+    p_lin = calculate_psnr(hr, sr_linear)
+    p_cub = calculate_psnr(hr, sr_cubic)
+    print(f"Image {i:<9} | {p_near:<12.2f} | {p_lin:<12.2f} | {p_cub:<12.2f}")
+print("=" * 60)
+'''
+
+# =====================================================================
+# TP3 FILES
+# =====================================================================
+FILES["TP3/TP3_Exo1.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+im1 = cv2.imread('Images/compteur.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Global Otsu
+otsu_threshold, im2 = cv2.threshold(im1, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+# Sauvola
+def binSauvola(im, k=0.04, R=128, tailleFen=15):
+    rad = tailleFen // 2
+    padded = np.pad(im.astype(np.float64), rad, mode='reflect')
+    out = np.zeros_like(im)
+    
+    ii = np.zeros((padded.shape[0] + 1, padded.shape[1] + 1), dtype=np.float64)
+    ii2 = np.zeros_like(ii)
+    ii[1:, 1:] = np.cumsum(np.cumsum(padded, axis=0), axis=1)
+    ii2[1:, 1:] = np.cumsum(np.cumsum(padded ** 2, axis=0), axis=1)
+    
+    h, w = im.shape
+    area = tailleFen * tailleFen
+    
+    for y in range(h):
+        for x in range(w):
+            s = ii[y + tailleFen, x + tailleFen] + ii[y, x] - ii[y, x + tailleFen] - ii[y + tailleFen, x]
+            s2 = ii2[y + tailleFen, x + tailleFen] + ii2[y, x] - ii2[y, x + tailleFen] - ii2[y + tailleFen, x]
+            mean = s / area
+            var = max(0.0, (s2 / area) - (mean ** 2))
+            std = np.sqrt(var)
+            thresh = mean * (1.0 + k * ((std / R) - 1.0))
+            out[y, x] = 255 if im[y, x] > thresh else 0
+            
+    return out
+
+im3 = binSauvola(im1, k=0.04, R=128, tailleFen=15)
+
+# Connected components
+num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(cv2.bitwise_not(im3))
+print(f"[TP3_Exo1] Connected components: {num_labels - 1}")
+'''
+
+FILES["TP3/TP3_Exo2.py"] = '''import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+im = cv2.imread('Images/camera-man.jpg', cv2.IMREAD_GRAYSCALE)
+
+def non_maximum_suppression(magnitude, orientation_rad):
+    h, w = magnitude.shape
+    nms = np.zeros((h, w), dtype=np.float32)
+    angle = np.rad2deg(orientation_rad) % 180
+
+    for i in range(1, h - 1):
+        for j in range(1, w - 1):
+            q, r = 255, 255
+            a = angle[i, j]
+            if (0 <= a < 22.5) or (157.5 <= a <= 180):
+                q, r = magnitude[i, j + 1], magnitude[i, j - 1]
+            elif 22.5 <= a < 67.5:
+                q, r = magnitude[i + 1, j - 1], magnitude[i - 1, j + 1]
+            elif 67.5 <= a < 112.5:
+                q, r = magnitude[i + 1, j], magnitude[i - 1, j]
+            elif 112.5 <= a < 157.5:
+                q, r = magnitude[i - 1, j - 1], magnitude[i + 1, j + 1]
+
+            nms[i, j] = magnitude[i, j] if (magnitude[i, j] >= q and magnitude[i, j] >= r) else 0
+    return nms
+
+def hysteresis_threshold(img, t_low=30, t_high=70):
+    h, w = img.shape
+    out = np.zeros((h, w), dtype=np.uint8)
+    strong_i, strong_j = np.where(img >= t_high)
+    weak_i, weak_j = np.where((img >= t_low) & (img < t_high))
+    out[strong_i, strong_j] = 255
+    out[weak_i, weak_j] = 50
+    
+    for i in range(1, h - 1):
+        for j in range(1, w - 1):
+            if out[i, j] == 50:
+                out[i, j] = 255 if (out[i-1:i+2, j-1:j+2] == 255).any() else 0
+    return out
+
+def generic_edge_detection(image, kx, ky, sb=30, sh=70):
+    gx = cv2.filter2D(image.astype(np.float32), -1, kx)
+    gy = cv2.filter2D(image.astype(np.float32), -1, ky)
+    mag = np.hypot(gx, gy)
+    ori = np.arctan2(gy, gx)
+    nms = non_maximum_suppression(mag, ori)
+    return hysteresis_threshold(nms, sb, sh)
+
+def sobel_edge_detection(im, sb=30, sh=70):
+    kx = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=np.float32)
+    ky = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=np.float32)
+    return generic_edge_detection(im, kx, ky, sb, sh)
+
+edges_sobel = sobel_edge_detection(im)
+edges_canny = cv2.Canny(im, 30, 70)
+print("[TP3_Exo2] Edge detectors executed successfully.")
+'''
+
+FILES["TP3/TP3_Exo3.py"] = '''from collections import deque
+import cv2
+import numpy as np
+from utils.generate_fixtures import generate_all_fixtures
+
+generate_all_fixtures()
+
+im1 = cv2.imread('Images/Cerveau_AVC1.JPG', cv2.IMREAD_GRAYSCALE)
+imb = cv2.GaussianBlur(im1, (5, 5), 4)
+
+def region_growing(img, seed_point=(260, 140), seuil=15):
+    h, w = img.shape
+    mask = np.zeros((h, w), dtype=np.uint8)
+    visited = np.zeros((h, w), dtype=bool)
+    
+    queue = deque([seed_point])
+    visited[seed_point[1], seed_point[0]] = True
+    mask[seed_point[1], seed_point[0]] = 255
+    seed_val = float(img[seed_point[1], seed_point[0]])
+    
+    while queue:
+        cx, cy = queue.popleft()
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
+            nx, ny = cx + dx, cy + dy
+            if 0 <= nx < w and 0 <= ny < h and not visited[ny, nx]:
+                visited[ny, nx] = True
+                if abs(float(img[ny, nx]) - seed_val) <= seuil:
+                    mask[ny, nx] = 255
+                    queue.append((nx, ny))
+    return mask
+
+lesion_mask = region_growing(imb, seed_point=(260, 140), seuil=15)
+print("[TP3_Exo3] Region growing completed successfully.")
+'''
+
+# =====================================================================
+# MASTER RUNNER
+# =====================================================================
+FILES["run_all.py"] = '''import subprocess
+import sys
+
+SCRIPTS = [
+    "TP1/TP1_Exo2.py",
+    "TP1/TP1_Exo3.py",
+    "TP1/TP1_Exo4.py",
+    "TP1/TP1_Exo5.py",
+    "TP2/TP2_Exo1.py",
+    "TP2/TP2_Exo2.py",
+    "TP2/TP2_Exo3.py",
+    "TP2/TP2_Exo4.py",
+    "TP2/TP2_Exo5.py",
+    "TP2/TP2_Exo6.py",
+    "TP3/TP3_Exo1.py",
+    "TP3/TP3_Exo2.py",
+    "TP3/TP3_Exo3.py",
+]
+
+print("=" * 60)
+print("EXECUTING FULL CODEBASE VERIFICATION SUITE")
+print("=" * 60)
+
+for s in SCRIPTS:
+    print(f"[*] Running {s}...")
+    res = subprocess.run([sys.executable, s], capture_output=False)
+    if res.returncode != 0:
+        print(f"[!] FAILED: {s}")
+        sys.exit(res.returncode)
+    print(f"[✓] PASSED: {s}\\n")
+
+print("=" * 60)
+print("[✓] ALL 13 LAB EXERCISES EXECUTED SUCCESSFULLY WITHOUT ERRORS.")
+print("=" * 60)
+'''
+
+def main():
+    print("[+] Generating complete TAI codebase...")
+    for rel_path, content in FILES.items():
+        dir_name = os.path.dirname(rel_path)
+        if dir_name:
+            os.makedirs(dir_name, exist_ok=True)
+        with open(rel_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        print(f"  -> Created: {rel_path}")
+
+    from utils.generate_fixtures import generate_all_fixtures
+    generate_all_fixtures("Images")
+    print("  -> Created synthetic image fixtures in Images/")
+
+    print("\n" + "=" * 60)
+    print("SUCCESS: Full codebase generated!")
+    print("Run `python run_all.py` or run individual scripts in TP1/, TP2/, TP3/.")
+    print("=" * 60)
+
+if __name__ == "__main__":
+    main()
