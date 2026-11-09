@@ -45,3 +45,7 @@ def filtreNagao(im, taille_filtre=5):
                 if var < best_var:
                     best_var = var
                     best_mean = np.mean(vals)
+
+            output[y, x] = int(round(best_mean))
+
+    return output
