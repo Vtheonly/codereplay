@@ -14,3 +14,8 @@ def binSauvola(im, k=0.04, R=128, tailleFen=15):
     rad = tailleFen // 2
     padded = np.pad(im.astype(np.float64), rad, mode='reflect')
     out = np.zeros_like(im)
+    
+    ii = np.zeros((padded.shape[0] + 1, padded.shape[1] + 1), dtype=np.float64)
+    ii2 = np.zeros_like(ii)
+    ii[1:, 1:] = np.cumsum(np.cumsum(padded, axis=0), axis=1)
+    ii2[1:, 1:] = np.cumsum(np.cumsum(padded ** 2, axis=0), axis=1)
