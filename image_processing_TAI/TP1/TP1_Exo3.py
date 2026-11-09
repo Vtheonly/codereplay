@@ -10,3 +10,6 @@ path = 'Images/counter.jpg' if os.path.exists('Images/counter.jpg') else 'Images
 img = cv2.imread(path)
 img_ng = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 height, width = img_ng.shape
+
+# Solution 1: OpenCV primitive
+_, imgb1 = cv2.threshold(img_ng, 80, 255, cv2.THRESH_BINARY)
