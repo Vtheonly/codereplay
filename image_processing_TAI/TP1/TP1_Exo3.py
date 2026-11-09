@@ -13,3 +13,10 @@ height, width = img_ng.shape
 
 # Solution 1: OpenCV primitive
 _, imgb1 = cv2.threshold(img_ng, 80, 255, cv2.THRESH_BINARY)
+
+# Solution 2: Explicit manual nested loops
+imgb2 = np.zeros((height, width), dtype=np.uint8)
+for i in range(height):
+    for j in range(width):
+        if img_ng[i, j] > 80:
+            imgb2[i, j] = 255
