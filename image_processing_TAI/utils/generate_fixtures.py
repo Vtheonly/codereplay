@@ -64,3 +64,12 @@ def generate_all_fixtures(base_dir="Images"):
         cv2.circle(img, (150, 150), 90, (30, 140, 240), -1)
         cv2.circle(img, (130, 130), 40, (180, 230, 255), -1)
         cv2.imwrite(p, img)
+
+    # 7. Cerveau_AVC1.JPG
+    p = os.path.join(base_dir, "Cerveau_AVC1.JPG")
+    if not os.path.exists(p):
+        img = np.zeros((350, 350), dtype=np.uint8)
+        cv2.ellipse(img, (175, 175), (130, 150), 0, 0, 360, 120, -1)
+        cv2.ellipse(img, (175, 175), (110, 130), 0, 0, 360, 70, -1)
+        cv2.circle(img, (260, 140), 25, 215, -1)
+        cv2.imwrite(p, img)
