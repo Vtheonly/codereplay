@@ -32,3 +32,9 @@ def filtreNagao(im, taille_filtre=5):
             s_dx = int(round(dx * scale))
             scaled_reg.add((s_dy, s_dx))
         scaled_regions.append(list(scaled_reg))
+
+    for y in range(h):
+        for x in range(w):
+            py, px = y + rad, x + rad
+            best_var = float('inf')
+            best_mean = padded[py, px]
