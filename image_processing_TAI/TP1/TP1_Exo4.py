@@ -15,3 +15,8 @@ im2 = cv2.resize(im1, (w // 2, h // 2), interpolation=cv2.INTER_LINEAR)
 
 # 4) Crop region [y_start=30:y_end=150, x_start=200:x_end=400] -> im3
 im3 = im1[30:150, 200:400].copy()
+
+# 5) Copy im1 -> im4, draw blue rectangle + text "My rectangle" in green at [x=200, y=20]
+im4 = im1.copy()
+cv2.rectangle(im4, (200, 30), (400, 150), (255, 0, 0), thickness=2)
+cv2.putText(im4, 'My rectangle', (200, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
