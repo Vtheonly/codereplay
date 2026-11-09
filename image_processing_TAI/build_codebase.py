@@ -880,3 +880,22 @@ print("[✓] ALL 13 LAB EXERCISES EXECUTED SUCCESSFULLY WITHOUT ERRORS.")
 print("=" * 60)
 '''
 
+def main():
+    print("[+] Generating complete TAI codebase...")
+    for rel_path, content in FILES.items():
+        dir_name = os.path.dirname(rel_path)
+        if dir_name:
+            os.makedirs(dir_name, exist_ok=True)
+        with open(rel_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        print(f"  -> Created: {rel_path}")
+
+    from utils.generate_fixtures import generate_all_fixtures
+    generate_all_fixtures("Images")
+    print("  -> Created synthetic image fixtures in Images/")
+
+    print("\n" + "=" * 60)
+    print("SUCCESS: Full codebase generated!")
+    print("Run `python run_all.py` or run individual scripts in TP1/, TP2/, TP3/.")
+    print("=" * 60)
+
