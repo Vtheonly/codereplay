@@ -27,3 +27,12 @@ print(f"Channels: {channels}")
 annotated = img.copy()
 center_row = height // 2
 annotated[center_row, :] = [0, 0, 255]
+
+cv2.imshow('Input Image', img)
+cv2.imshow('Image loaded in grayscale', gray_img)
+cv2.imshow('Image converted to grayscale', gray_img2)
+cv2.imshow('Centerline Red', annotated)
+
+print("[TP1_Exo2] Displaying. Press any key to continue...")
+cv2.waitKey(0)
+cv2.destroyAllWindows()
