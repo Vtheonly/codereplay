@@ -21,3 +21,6 @@ def expansionHisto(image, seuil=0, y_min=0, y_max=255):
     x_min, x_max = valid_indices[0], valid_indices[-1]
     if x_max == x_min:
         return image.copy()
+    
+    res = (image.astype(np.float64) - x_min) / (x_max - x_min) * (y_max - y_min) + y_min
+    return np.clip(np.round(res), y_min, y_max).astype(np.uint8)
