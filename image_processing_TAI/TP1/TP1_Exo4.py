@@ -6,3 +6,6 @@ generate_all_fixtures()
 
 # 1) Read image im1
 im1 = cv2.imread('Images/pepper.bmp')
+# 2) Read size (height, width)
+h, w = im1.shape[:2]
+print(f"Height: {h}, Width: {w}")
