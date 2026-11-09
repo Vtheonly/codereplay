@@ -37,3 +37,9 @@ imc1_eq = cv2.cvtColor(imc1_ycrcb, cv2.COLOR_YCrCb2BGR)
 # CLAHE
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 im1_clahe = clahe.apply(im1)
+
+imc1_lab = cv2.cvtColor(imc1, cv2.COLOR_BGR2LAB)
+imc1_lab[:, :, 0] = clahe.apply(imc1_lab[:, :, 0])
+imc1_clahe = cv2.cvtColor(imc1_lab, cv2.COLOR_LAB2BGR)
+
+print("[TP2_Exo5] Dynamic range and CLAHE processed successfully.")
