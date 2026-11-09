@@ -23,3 +23,12 @@ def filtreNagao(im, taille_filtre=5):
     scale = rad / 2.0
     padded = np.pad(im.astype(np.float64), rad, mode='reflect')
     output = np.zeros((h, w), dtype=np.uint8)
+
+    scaled_regions = []
+    for reg in NAGAO_OFFSETS:
+        scaled_reg = set()
+        for dy, dx in reg:
+            s_dy = int(round(dy * scale))
+            s_dx = int(round(dx * scale))
+            scaled_reg.add((s_dy, s_dx))
+        scaled_regions.append(list(scaled_reg))
