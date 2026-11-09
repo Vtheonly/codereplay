@@ -43,3 +43,8 @@ axs[0, 1].plot(hist1, color='black', label='Grayscale')
 axs[0, 1].set_title('Histogram im1')
 axs[0, 1].set_xlim([0, 256])
 axs[0, 1].legend()
+
+im2_rgb = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
+axs[1, 0].imshow(im2_rgb)
+axs[1, 0].set_title('im2: Pepper')
+axs[1, 0].axis('off')
