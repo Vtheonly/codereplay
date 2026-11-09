@@ -28,3 +28,6 @@ def region_growing(img, seed_point=(260, 140), seuil=15):
                     mask[ny, nx] = 255
                     queue.append((nx, ny))
     return mask
+
+lesion_mask = region_growing(imb, seed_point=(260, 140), seuil=15)
+print("[TP3_Exo3] Region growing completed successfully.")
