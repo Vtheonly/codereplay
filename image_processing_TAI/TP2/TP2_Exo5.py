@@ -16,3 +16,8 @@ def expansionHisto(image, seuil=0, y_min=0, y_max=255):
     
     hist = np.bincount(image.ravel(), minlength=256)
     valid_indices = np.where(hist > seuil)[0]
+    if len(valid_indices) == 0:
+        return image.copy()
+    x_min, x_max = valid_indices[0], valid_indices[-1]
+    if x_max == x_min:
+        return image.copy()
