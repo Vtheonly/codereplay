@@ -10,3 +10,6 @@ generate_all_fixtures()
 def calculate_psnr(orig, deg):
     mse = np.mean((orig.astype(np.float64) - deg.astype(np.float64)) ** 2)
     return float('inf') if mse == 0 else 10.0 * math.log10((255.0 ** 2) / mse)
+
+base = "Images/Images_TP2_EXO6_SR"
+hr_files = sorted(glob.glob(os.path.join(base, "HR_GT_512x512", "*.jpg")))
