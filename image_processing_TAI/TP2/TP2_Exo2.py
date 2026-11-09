@@ -71,3 +71,8 @@ def filtreMoyenne_adaptative(image, taille_masque=5, noise_var=100.0):
                 factor = noise_var / l_var
             res[y, x] = l_mean + (1.0 - factor) * (image[y, x] - l_mean)
     return np.clip(np.round(res), 0, 255).astype(np.uint8)
+
+# Main
+im1 = cv2.imread('Images/cameraman.bmp', cv2.IMREAD_GRAYSCALE)
+im2 = cv2.imread('Images/cameraman_bruit_gauss_sig0_001.bmp', cv2.IMREAD_GRAYSCALE)
+im3 = cv2.imread('Images/cameraman_bruit_sel_poivre_p_10.bmp', cv2.IMREAD_GRAYSCALE)
