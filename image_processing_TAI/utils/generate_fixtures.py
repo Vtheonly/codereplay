@@ -44,3 +44,14 @@ def generate_all_fixtures(base_dir="Images"):
             cv2.rectangle(img, (110, 122), (146, 220), 20, -1)
             cv2.line(img, (140, 130), (200, 220), 10, 4)
             cv2.imwrite(p, img)
+
+    # 5. Globules_rouges.jpg
+    p = os.path.join(base_dir, "Globules_rouges.jpg")
+    if not os.path.exists(p):
+        img = np.full((350, 350), 210, dtype=np.uint8)
+        rng = np.random.default_rng(42)
+        for _ in range(40):
+            cx, cy = rng.integers(30, 320, size=2)
+            r = rng.integers(14, 22)
+            cv2.circle(img, (int(cx), int(cy)), int(r), int(rng.integers(30, 70)), -1)
+        cv2.imwrite(p, img)
