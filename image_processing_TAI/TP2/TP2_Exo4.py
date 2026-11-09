@@ -49,3 +49,7 @@ except AttributeError:
                         b = p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9
                         if not (2 <= b <= 6):
                             continue
+                        seq = [p2, p3, p4, p5, p6, p7, p8, p9, p2]
+                        a = sum(seq[k] == 0 and seq[k+1] == 1 for k in range(8))
+                        if a != 1:
+                            continue
