@@ -13,3 +13,7 @@ def region_growing(img, seed_point=(260, 140), seuil=15):
     mask = np.zeros((h, w), dtype=np.uint8)
     visited = np.zeros((h, w), dtype=bool)
     
+    queue = deque([seed_point])
+    visited[seed_point[1], seed_point[0]] = True
+    mask[seed_point[1], seed_point[0]] = 255
+    seed_val = float(img[seed_point[1], seed_point[0]])
