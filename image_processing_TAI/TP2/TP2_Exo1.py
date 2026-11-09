@@ -27,3 +27,11 @@ cv2.imwrite('Images/cameraman_bruit_gauss_sig0_001.bmp', im2)
 # 3) Salt & Pepper noise p = 10% -> im3
 im3 = sp_noise(im1, prob=0.10)
 cv2.imwrite('Images/cameraman_bruit_sel_poivre_p_10.bmp', im3)
+
+# 4) Display and compare
+cv2.imshow('im1 - Original', im1)
+cv2.imshow('im2 - Gaussian Noise (var=100)', im2)
+cv2.imshow('im3 - Salt & Pepper Noise (p=0.10)', im3)
+print("[TP2_Exo1] Displaying noise models. Press any key to continue...")
+cv2.waitKey(0)
+cv2.destroyAllWindows()
