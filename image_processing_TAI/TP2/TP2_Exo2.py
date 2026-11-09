@@ -47,3 +47,9 @@ def filtreMoyenne_integral(image, taille_masque):
     padded = np.pad(image.astype(np.float64), rad, mode='reflect')
     ii = np.zeros((padded.shape[0] + 1, padded.shape[1] + 1), dtype=np.float64)
     ii[1:, 1:] = np.cumsum(np.cumsum(padded, axis=0), axis=1)
+    
+    area = taille_masque * taille_masque
+    sums = (ii[taille_masque:h + taille_masque, taille_masque:w + taille_masque]
+            + ii[0:h, 0:w]
+            - ii[0:h, taille_masque:w + taille_masque]
+            - ii[taille_masque:h + taille_masque, 0:w])
