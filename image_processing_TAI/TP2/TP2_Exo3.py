@@ -38,3 +38,10 @@ def filtreNagao(im, taille_filtre=5):
             py, px = y + rad, x + rad
             best_var = float('inf')
             best_mean = padded[py, px]
+
+            for reg in scaled_regions:
+                vals = [padded[py + dy, px + dx] for dy, dx in reg]
+                var = np.var(vals)
+                if var < best_var:
+                    best_var = var
+                    best_mean = np.mean(vals)
