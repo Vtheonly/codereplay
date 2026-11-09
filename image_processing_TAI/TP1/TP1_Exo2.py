@@ -22,3 +22,8 @@ height, width, channels = img.shape
 print(f"Height: {height} pixels")
 print(f"Width: {width} pixels")
 print(f"Channels: {channels}")
+
+# 5. Modifying center horizontal scanline to pure red [B=0, G=0, R=255]
+annotated = img.copy()
+center_row = height // 2
+annotated[center_row, :] = [0, 0, 255]
