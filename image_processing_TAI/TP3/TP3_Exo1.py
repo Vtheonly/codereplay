@@ -34,3 +34,9 @@ def binSauvola(im, k=0.04, R=128, tailleFen=15):
             out[y, x] = 255 if im[y, x] > thresh else 0
             
     return out
+
+im3 = binSauvola(im1, k=0.04, R=128, tailleFen=15)
+
+# Connected components
+num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(cv2.bitwise_not(im3))
+print(f"[TP3_Exo1] Connected components: {num_labels - 1}")
