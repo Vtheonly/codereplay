@@ -21,3 +21,7 @@ cleaned = cv2.morphologyEx(imb1, cv2.MORPH_OPEN, kernel, iterations=2)
 dist_transform = cv2.distanceTransform(cleaned, cv2.DIST_L2, 5)
 _, sure_fg = cv2.threshold(dist_transform, 0.4 * dist_transform.max(), 255, 0)
 sure_fg = np.uint8(sure_fg)
+
+num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(sure_fg)
+cell_count = num_labels - 1
+print(f"[TP2_Exo4] Estimated red blood cell count: {cell_count}")
