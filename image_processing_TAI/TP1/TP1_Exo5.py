@@ -32,3 +32,6 @@ np.testing.assert_array_equal(hist2_B, histp2_B)
 np.testing.assert_array_equal(hist2_G, histp2_G)
 np.testing.assert_array_equal(hist2_R, histp2_R)
 print("[TP1_Exo5] Verified: Custom histogram computation matches OpenCV 100%.")
+
+# 3) Display with matplotlib
+fig, axs = plt.subplots(2, 2, figsize=(12, 8))
