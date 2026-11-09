@@ -26,3 +26,11 @@ def non_maximum_suppression(magnitude, orientation_rad):
 
             nms[i, j] = magnitude[i, j] if (magnitude[i, j] >= q and magnitude[i, j] >= r) else 0
     return nms
+
+def hysteresis_threshold(img, t_low=30, t_high=70):
+    h, w = img.shape
+    out = np.zeros((h, w), dtype=np.uint8)
+    strong_i, strong_j = np.where(img >= t_high)
+    weak_i, weak_j = np.where((img >= t_low) & (img < t_high))
+    out[strong_i, strong_j] = 255
+    out[weak_i, weak_j] = 50
