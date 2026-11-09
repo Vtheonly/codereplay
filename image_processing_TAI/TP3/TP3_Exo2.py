@@ -23,3 +23,6 @@ def non_maximum_suppression(magnitude, orientation_rad):
                 q, r = magnitude[i + 1, j], magnitude[i - 1, j]
             elif 112.5 <= a < 157.5:
                 q, r = magnitude[i - 1, j - 1], magnitude[i + 1, j + 1]
+
+            nms[i, j] = magnitude[i, j] if (magnitude[i, j] >= q and magnitude[i, j] >= r) else 0
+    return nms
