@@ -98,3 +98,7 @@ for s in [2.0, 1.5, 1.0, 0.5]:
 bench("Median 3x3", "S&P", cv2.medianBlur(im3, 3))
 bench("Median 5x5", "S&P", cv2.medianBlur(im3, 5))
 bench("Median 7x7", "S&P", cv2.medianBlur(im3, 7))
+
+# Bilateral
+bench("Bilateral d=7", "Gaussian", cv2.bilateralFilter(im2, 7, 40, 40))
+bench("Bilateral d=7", "S&P", cv2.bilateralFilter(im3, 7, 40, 40))
