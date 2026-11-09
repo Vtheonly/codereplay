@@ -46,3 +46,6 @@ except AttributeError:
                         p2, p3, p4 = img[i-1, j], img[i-1, j+1], img[i, j+1]
                         p5, p6, p7 = img[i+1, j+1], img[i+1, j], img[i+1, j-1]
                         p8, p9 = img[i, j-1], img[i-1, j-1]
+                        b = p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9
+                        if not (2 <= b <= 6):
+                            continue
