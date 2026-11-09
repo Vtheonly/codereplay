@@ -18,3 +18,6 @@ for ksize in [3, 5, 7]:
 # 2) Cell separation and counting
 kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
 cleaned = cv2.morphologyEx(imb1, cv2.MORPH_OPEN, kernel, iterations=2)
+dist_transform = cv2.distanceTransform(cleaned, cv2.DIST_L2, 5)
+_, sure_fg = cv2.threshold(dist_transform, 0.4 * dist_transform.max(), 255, 0)
+sure_fg = np.uint8(sure_fg)
