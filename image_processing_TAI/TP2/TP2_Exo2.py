@@ -88,3 +88,8 @@ bench("Mean 3x3", "Gaussian", cv2.blur(im2, (3, 3)))
 bench("Mean 5x5", "Gaussian", cv2.blur(im2, (5, 5)))
 bench("Mean 7x7", "Gaussian", cv2.blur(im2, (7, 7)))
 bench("Fast Integral Mean 7x7", "Gaussian", filtreMoyenne_integral(im2, 7))
+
+# Gauss
+for s in [2.0, 1.5, 1.0, 0.5]:
+    bench(f"Gauss 3x3 s={s}", "Gaussian", cv2.GaussianBlur(im2, (3, 3), s))
+    bench(f"Gauss 5x5 s={s}", "Gaussian", cv2.GaussianBlur(im2, (5, 5), s))
