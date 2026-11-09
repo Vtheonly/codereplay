@@ -14,3 +14,6 @@ def sp_noise(image, prob):
     output[probs < (prob / 2.0)] = black
     output[probs > 1.0 - (prob / 2.0)] = white
     return output
+
+# 1) Read grayscale cameraman.bmp into 2D array im1
+im1 = cv2.imread('Images/cameraman.bmp', cv2.IMREAD_GRAYSCALE)
