@@ -899,3 +899,5 @@ def main():
     print("Run `python run_all.py` or run individual scripts in TP1/, TP2/, TP3/.")
     print("=" * 60)
 
+if __name__ == "__main__":
+    main()
