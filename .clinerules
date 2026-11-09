@@ -1,0 +1,27 @@
+# CodeReplay Integration
+
+When asked to deconstruct a codebase into a CodeReplay manifest, follow this workflow **exactly**:
+
+## Workflow
+
+1. **Scan** — call `codereplay_scan` with the repo path and scoped paths. Review `git_head`, `files`, and `suggested_scope_type`.
+2. **Read** — call `codereplay_read_files` (batch) with the actual files you will decompose. Do NOT guess contents.
+3. **Compose** a CodeReplay **v2.1** manifest. Hard rules:
+   - `spec_version` must be exactly `"2.1"`.
+   - `project_metadata.target_commit` must equal the `git_head` from step 1.
+   - `project_metadata.scope_type` must be `"FULL"` if you scanned `["."]`, otherwise `"PARTIAL"`.
+   - Each `code_changes[]` entry uses `content` (full file snapshot) for CREATE/MODIFY. **Never invent `patch` diffs.**
+   - Use `action: "RENAME"` with `old_path` for moves; omit `content` to preserve bytes.
+   - Each step is an atomic conceptual unit — a feature, layer, refactor, or test. Never split a function across steps.
+   - Multi-file steps are encouraged when a single concept touches multiple files.
+   - Explanations: rich Markdown narrative + optional `diagram` (Mermaid) + optional `math` (LaTeX).
+4. **Validate** — call `codereplay_validate_manifest`. If `valid: false`, fix the errors and re-validate. Do NOT skip this step.
+5. **Write** — call `codereplay_write_manifest` to persist `codereplay.json`.
+6. **Verify** — call `codereplay_verify`. If `verified: false`, the diff explains what is missing or extra — fix the manifest and start over from step 4.
+
+## Non-negotiable constraints
+
+- Never emit a manifest without running `codereplay_verify`.
+- Never invent `patch` strings.
+- Never split a function or class across steps.
+- Never edit files outside the scope of what `codereplay_scan` returned.

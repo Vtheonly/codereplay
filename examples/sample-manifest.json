@@ -1,0 +1,63 @@
+{
+  "spec_version": "2.1",
+  "project_metadata": {
+    "name": "greeter-demo",
+    "scope_type": "FULL",
+    "target_commit": "0000000000000000000000000000000000000000",
+    "scoped_paths": []
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "title": "Scaffold the project",
+      "commit_message": "scaffold: package.json + README",
+      "explanation": {
+        "markdown": "Every Node project begins with **two artifacts**: a `package.json` that declares metadata and dependencies, and a `README.md` that documents the contract. Neither executes code; they establish the shape of everything that follows."
+      },
+      "code_changes": [
+        {
+          "path": "package.json",
+          "action": "CREATE",
+          "content": "{\n  \"name\": \"greeter-demo\",\n  \"version\": \"0.1.0\",\n  \"type\": \"module\",\n  \"scripts\": { \"start\": \"node src/index.js\" }\n}\n"
+        },
+        {
+          "path": "README.md",
+          "action": "CREATE",
+          "content": "# greeter-demo\n\nA minimal greeter.\n"
+        }
+      ]
+    },
+    {
+      "step_id": 2,
+      "title": "Introduce the pure greeter",
+      "commit_message": "feat: add greet(name) pure function",
+      "explanation": {
+        "markdown": "The **core abstraction** is a pure function: given a name, produce a greeting. There are no I/O concerns, no logging, no configuration — just `name → string`. This isolates the domain logic before it is contaminated by the shell of `process.stdout`.",
+        "diagram": "flowchart LR\n  Name[name: string] --> Greet[greet()]\n  Greet --> Out[\"Hello, \" + name + \"!\"]"
+      },
+      "code_changes": [
+        {
+          "path": "src/greet.js",
+          "action": "CREATE",
+          "content": "export function greet(name) {\n  return `Hello, ${name}!`;\n}\n"
+        }
+      ]
+    },
+    {
+      "step_id": 3,
+      "title": "Wire the CLI entrypoint",
+      "commit_message": "feat: wire CLI entrypoint",
+      "explanation": {
+        "markdown": "Finally the **shell layer**: parse `process.argv`, invoke `greet()`, print. This is where I/O enters the program. The cost of introducing the entrypoint last is that if `greet` breaks, we already know exactly where the bug lives — in one pure function, not in the wiring.",
+        "math": ["\\text{output} = \\text{greet}(\\text{argv}[2] \\mid \\mid \\text{``world''})"]
+      },
+      "code_changes": [
+        {
+          "path": "src/index.js",
+          "action": "CREATE",
+          "content": "import { greet } from './greet.js';\n\nconst name = process.argv[2] ?? 'world';\nconsole.log(greet(name));\n"
+        }
+      ]
+    }
+  ]
+}
