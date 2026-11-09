@@ -15,3 +15,10 @@ def calculate_psnr(orig, deg, r=255.0):
     if mse == 0:
         return float('inf')
     return 10.0 * math.log10((r ** 2) / mse)
+
+# 2) Custom Mean Filter
+def filtreMoyenne(image, taille_masque):
+    if taille_masque % 2 == 0:
+        raise ValueError("Mask size must be odd")
+    rad = taille_masque // 2
+    padded = np.pad(image.astype(np.float64), rad, mode='reflect')
