@@ -60,3 +60,13 @@ def filtreMoyenne_adaptative(image, taille_masque=5, noise_var=100.0):
     rad = taille_masque // 2
     padded = np.pad(image.astype(np.float64), rad, mode='reflect')
     res = np.zeros_like(image, dtype=np.float64)
+    for y in range(image.shape[0]):
+        for x in range(image.shape[1]):
+            window = padded[y:y + taille_masque, x:x + taille_masque]
+            l_mean = np.mean(window)
+            l_var = np.var(window)
+            if l_var < noise_var:
+                factor = 1.0
+            else:
+                factor = noise_var / l_var
+            res[y, x] = l_mean + (1.0 - factor) * (image[y, x] - l_mean)
