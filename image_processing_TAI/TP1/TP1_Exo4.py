@@ -25,3 +25,6 @@ cv2.putText(im4, 'My rectangle', (200, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 2
 center = (w / 2.0, h / 2.0)
 matrix = cv2.getRotationMatrix2D(center, 90.0, 1.0)
 im5 = cv2.warpAffine(im1, matrix, (w, h))
+
+# 7) Apply Gaussian blur -> im6
+im6 = cv2.GaussianBlur(im1, (15, 15), 0)
