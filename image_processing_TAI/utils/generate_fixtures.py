@@ -55,3 +55,12 @@ def generate_all_fixtures(base_dir="Images"):
             r = rng.integers(14, 22)
             cv2.circle(img, (int(cx), int(cy)), int(r), int(rng.integers(30, 70)), -1)
         cv2.imwrite(p, img)
+
+    # 6. glaucome-haut-gauche.jpg
+    p = os.path.join(base_dir, "glaucome-haut-gauche.jpg")
+    if not os.path.exists(p):
+        img = np.zeros((300, 300, 3), dtype=np.uint8)
+        img[:] = [10, 30, 110]
+        cv2.circle(img, (150, 150), 90, (30, 140, 240), -1)
+        cv2.circle(img, (130, 130), 40, (180, 230, 255), -1)
+        cv2.imwrite(p, img)
