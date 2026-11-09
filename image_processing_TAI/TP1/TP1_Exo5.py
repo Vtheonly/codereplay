@@ -55,3 +55,6 @@ axs[1, 1].plot(hist2_B, color='blue', label='Blue')
 axs[1, 1].set_title('Color Histograms im2')
 axs[1, 1].set_xlim([0, 256])
 axs[1, 1].legend()
+
+plt.tight_layout()
+plt.show()
