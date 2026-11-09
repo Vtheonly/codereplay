@@ -13,3 +13,7 @@ def calculate_psnr(orig, deg):
 
 base = "Images/Images_TP2_EXO6_SR"
 hr_files = sorted(glob.glob(os.path.join(base, "HR_GT_512x512", "*.jpg")))
+
+print("=" * 60)
+print(f"{'IMAGE':<15} | {'NEAREST 2x':<12} | {'BILINEAR 2x':<12} | {'BICUBIC 2x':<12}")
+print("=" * 60)
